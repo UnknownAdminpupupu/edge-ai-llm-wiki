@@ -1759,5 +1759,21 @@ pre { background: var(--panel); padding: 12px; border-radius: 6px; overflow-x: a
 })();
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  if (!window.mermaid) return;
+  var dark = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches;
+  mermaid.initialize({ startOnLoad: false, theme: dark ? "dark" : "neutral", securityLevel: "strict" });
+  function draw() {
+    var sec = document.querySelector("section[data-page]:not([hidden])");
+    if (!sec) return;
+    var nodes = sec.querySelectorAll("pre.mermaid:not([data-processed])");
+    if (nodes.length) mermaid.run({ nodes: nodes });
+  }
+  window.addEventListener("hashchange", function () { setTimeout(draw, 0); });
+  draw();
+})();
+</script>
 </body>
 </html>
