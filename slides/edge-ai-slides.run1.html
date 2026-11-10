@@ -1,0 +1,543 @@
+<title>Edge AI 入門</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout：一次一張投影片，內容在 16:9 舞台內；手機改成直式、可在單張內捲動。視覺語言＝電路板：防焊漆底色＋銅箔走線 */
+:root {
+  --bg: #eef1ef;
+  --panel: #e2e8e4;
+  --ink: #16201c;
+  --muted: #56645e;
+  --line: #c6d0cb;
+  --copper: #a8541f;
+  --copper-soft: #f2ddcc;
+  --trace: #2f6f5e;
+  --trace-soft: #d4e6df;
+  --ok: #2f7a4a;
+  --bad: #b23a2e;
+  --f-display: "Space Grotesk", "Noto Sans TC", system-ui, sans-serif;
+  --f-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111614; --panel: #19211d; --ink: #e4ebe7; --muted: #9babA4; --line: #2b3631;
+  --copper: #e39a66; --copper-soft: #3b2a1e; --trace: #72c4ab; --trace-soft: #1d332c; --ok: #6fc28b; --bad: #ee7d70; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #111614; --panel: #19211d; --ink: #e4ebe7; --muted: #9babA4; --line: #2b3631;
+  --copper: #e39a66; --copper-soft: #3b2a1e; --trace: #72c4ab; --trace-soft: #1d332c; --ok: #6fc28b; --bad: #ee7d70; color-scheme: dark }
+* { box-sizing: border-box }
+html, body { height: 100% }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: clamp(16px, 1.6vw, 22px); line-height: 1.6; overflow: hidden }
+.deck { height: 100%; display: flex; flex-direction: column }
+.stage { flex: 1; min-height: 0; position: relative; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 8px }
+.slide { height: 100%; max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; overflow: hidden }
+.slide[hidden] { display: none }
+.eyebrow { font-family: var(--f-mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--copper); margin: 0 }
+h1, h2 { font-family: var(--f-display); margin: 0; text-wrap: balance; line-height: 1.2 }
+h2 { font-size: clamp(26px, 3.6vw, 40px) }
+p { margin: 0 }
+.lead { font-size: 1.05em; color: var(--muted); max-width: 60ch }
+.cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; min-height: 0 }
+.cols3 { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; min-width: 0 }
+.card h3 { margin: 0; font-size: 1.15em; font-family: var(--f-display) }
+ul.pts { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 8px }
+dfn { font-style: normal; border-bottom: 2px dotted var(--copper); cursor: help }
+.term-note { font-size: .82em; color: var(--muted) }
+.src { margin-top: auto; font-family: var(--f-mono); font-size: 12px; color: var(--muted) }
+.src a { color: var(--muted) }
+.big { font-family: var(--f-display); font-weight: 700; color: var(--copper); font-size: clamp(36px, 5vw, 56px); line-height: 1; font-variant-numeric: tabular-nums }
+svg text { font-family: var(--f-body) }
+.diagram { width: 100%; height: auto; max-height: 100%; display: block }
+.fill-panel { fill: var(--panel) } .stroke-line { stroke: var(--line) } .fill-ink { fill: var(--ink) } .fill-muted { fill: var(--muted) }
+.fill-copper { fill: var(--copper) } .stroke-copper { stroke: var(--copper) } .fill-trace { fill: var(--trace) } .stroke-trace { stroke: var(--trace) }
+.fill-copper-soft { fill: var(--copper-soft) } .fill-trace-soft { fill: var(--trace-soft) }
+table.grid { border-collapse: collapse; width: 100%; font-size: .9em }
+table.grid th, table.grid td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left }
+table.grid th { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; color: var(--muted); font-weight: 500 }
+.dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: middle; margin-right: 6px }
+.dot.c { background: var(--muted) } .dot.e { background: var(--trace) } .dot.d { background: var(--copper) }
+.bars { display: flex; flex-direction: column; gap: 14px }
+.bar-row { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 12px; align-items: center }
+.bar-track { display: flex; flex-direction: column; gap: 4px }
+.bar { height: 22px; border-radius: 3px; display: flex; align-items: center; font-family: var(--f-mono); font-size: 13px; white-space: nowrap }
+.bar.before { background: var(--line) ; padding-left: 8px }
+.bar.after { background: var(--copper); min-width: 4px }
+.bar-label { font-family: var(--f-mono); font-size: 13px; color: var(--muted) }
+.cover { justify-content: center; gap: 24px }
+.cover h1 { font-size: clamp(44px, 7vw, 88px); letter-spacing: -.01em }
+.cover h1 span { color: var(--copper) }
+.cover .who { font-family: var(--f-mono); font-size: 14px; color: var(--muted) }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px }
+.chip { font-family: var(--f-mono); font-size: 13px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted) }
+.myth { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 24px; align-items: start }
+.myth .no { color: var(--bad); font-weight: 500 } .myth .yes { color: var(--ink) }
+.myth .no::before { content: "✕ "; } .myth .yes::before { content: "✓ "; color: var(--ok) }
+.quiz { display: flex; flex-direction: column; gap: 14px; overflow-y: auto }
+.q { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px }
+.q p { font-weight: 500 }
+.opts { display: flex; flex-wrap: wrap; gap: 8px }
+.opts button { font: inherit; font-size: 15px; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer }
+.opts button:hover { border-color: var(--copper) }
+.opts button.right { border-color: var(--ok); color: var(--ok); font-weight: 700 }
+.opts button.wrong { border-color: var(--bad); color: var(--bad); text-decoration: line-through }
+.fb { font-size: 15px; color: var(--muted) }
+.notes { display: none; border-top: 1px dashed var(--line); padding-top: 8px; font-size: 15px; color: var(--muted) }
+body.show-notes .notes { display: block }
+.bar-ui { display: flex; align-items: center; gap: 12px; padding-block: 10px calc(10px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); border-top: 1px solid var(--line); background: var(--panel) }
+.bar-ui button { font: inherit; font-size: 15px; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer }
+.bar-ui button:disabled { opacity: .4; cursor: default }
+.progress { flex: 1; height: 4px; background: var(--line); border-radius: 2px; overflow: hidden }
+.progress i { display: block; height: 100%; background: var(--copper); width: 0; transition: width .2s }
+.count { font-family: var(--f-mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 4.5em; text-align: right }
+.help { font-size: 12px; color: var(--muted) }
+:focus-visible { outline: 2px solid var(--copper); outline-offset: 2px }
+@media (max-width: 760px) {
+  body { font-size: 16px }
+  .slide { overflow-y: auto; gap: 14px }
+  .cols, .cols3, .myth { grid-template-columns: minmax(0, 1fr) }
+  .help { display: none }
+}
+@media (prefers-reduced-motion: no-preference) { .slide:not([hidden]) { animation: rise .3s ease-out } @keyframes rise { from { transform: translateY(8px) } to { transform: none } } }
+</style>
+
+<div class="deck">
+<div class="stage" id="stage">
+
+<!-- 1 封面 -->
+<section class="slide cover" data-wiki="edge-ai">
+  <p class="eyebrow">教學簡報 · 給第一次接觸的人</p>
+  <h1>Edge AI 入門<br><span>讓 AI 在小裝置上跑起來</span></h1>
+  <p class="lead">為什麼你的手錶、門鈴、手機鍵盤不用每次都問雲端，就能「自己想」？</p>
+  <p class="who">北科電子 112360106 黃資宸 · 知識來源：Edge AI LLM Wiki（6 篇來源）</p>
+  <p class="help">鍵盤 ← → 翻頁 · 按 N 顯示講者備註</p>
+</section>
+
+<!-- 2 學習目標 -->
+<section class="slide" data-wiki="edge-ai,cloud-vs-edge,model-compression,federated-learning">
+  <p class="eyebrow">學習目標</p>
+  <h2>今天學完，你會知道</h2>
+  <div class="cols">
+    <div class="card"><h3>1. 是什麼</h3><p>邊緣 AI 的定義，和<dfn title="把模型部署在遠端雲端伺服器上執行">雲端 AI</dfn> 差在哪。</p></div>
+    <div class="card"><h3>2. 為什麼</h3><p>什麼情況一定要把 AI 放在裝置旁邊。</p></div>
+    <div class="card"><h3>3. 怎麼做到</h3><p>小裝置跑得動大模型的兩個方法：壓縮模型、軟硬體一起設計。</p></div>
+    <div class="card"><h3>4. 怎麼判斷</h3><p>用六個指標評估一個邊緣 AI 系統。</p></div>
+  </div>
+</section>
+
+<!-- 3 引入 -->
+<section class="slide" data-wiki="use-cases,cloud-vs-edge">
+  <p class="eyebrow">從生活開始</p>
+  <h2>手錶怎麼知道你跌倒了？</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>如果全部交給雲端</h3>
+      <ul class="pts">
+        <li>感測資料要先上傳，等雲端算完再回傳</li>
+        <li>網路不穩或沒訊號時，就判斷不了</li>
+        <li>心率、位置這些私人資料都要離開手錶</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>在手錶上直接判斷</h3>
+      <ul class="pts">
+        <li>穿戴裝置在本機分析心率等數值，偵測到跌倒就通知照護者</li>
+        <li>不用等網路，反應快</li>
+        <li>資料留在身上</li>
+      </ul>
+    </div>
+  </div>
+  <p class="lead">右邊這種做法，就是今天的主角：<strong>邊緣 AI</strong>。</p>
+  <p class="src">依據 wiki：use-cases、cloud-vs-edge（S1、S2）</p>
+  <div class="notes">先問台下：「你覺得手錶會把資料傳到哪裡？」讓大家意識到雲端往返的成本。</div>
+</section>
+
+<!-- 4 定義 -->
+<section class="slide" data-wiki="edge-ai,glossary,sources">
+  <p class="eyebrow">定義</p>
+  <h2>邊緣 AI ＝ <dfn title="把運算從網路核心搬到靠近資料來源的地方">邊緣運算</dfn> ＋ 人工智慧</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>常見說法（狹義）</h3>
+      <p>把 AI 模型直接放在本地的裝置上，例如感測器、<dfn title="連上網路的感測器、家電等裝置">IoT</dfn> 裝置，不必一直靠雲端就能即時處理。</p>
+      <p class="term-note">IBM 等企業文章多半用這個定義。</p>
+    </div>
+    <div class="card">
+      <h3>學術說法（廣義）</h3>
+      <p>同時利用「端裝置、邊緣節點、雲端」三層資源，<dfn title="讓模型從資料中學會；第 6 頁詳細說明">訓練</dfn>和<dfn title="用學好的模型回答新問題；第 6 頁詳細說明">推論</dfn>都可以分工合作。</p>
+      <p class="term-note">Zhou 等人（2019）認為只看「裝置上跑模型」太窄。本簡報採用這個說法。</p>
+    </div>
+  </div>
+  <p class="lead">關鍵字只有一個：<strong>靠近資料產生的地方</strong>。</p>
+  <p class="src">依據 wiki：edge-ai、sources（S1、S2；兩來源定義衝突已在 wiki 標註）</p>
+</section>
+
+<!-- 5 雲端 vs 邊緣 -->
+<section class="slide" data-wiki="cloud-vs-edge">
+  <p class="eyebrow">比較</p>
+  <h2>雲端 vs 邊緣：不是對手，是分工</h2>
+  <div class="cols">
+    <svg class="diagram" viewBox="0 0 520 300" role="img" aria-label="裝置、邊緣、雲端三層，越往右越遠">
+      <line x1="90" y1="150" x2="430" y2="150" class="stroke-trace" stroke-width="3" stroke-dasharray="6 6"/>
+      <rect x="20" y="105" width="140" height="90" rx="10" class="fill-copper-soft"/>
+      <text x="90" y="145" text-anchor="middle" class="fill-ink" font-size="18" font-weight="700">裝置</text>
+      <text x="90" y="170" text-anchor="middle" class="fill-muted" font-size="14">手錶、攝影機</text>
+      <rect x="190" y="105" width="140" height="90" rx="10" class="fill-trace-soft"/>
+      <text x="260" y="145" text-anchor="middle" class="fill-ink" font-size="18" font-weight="700">邊緣節點</text>
+      <text x="260" y="170" text-anchor="middle" class="fill-muted" font-size="14">閘道、基地台旁</text>
+      <rect x="360" y="105" width="140" height="90" rx="10" class="fill-panel stroke-line" stroke-width="1.5"/>
+      <text x="430" y="145" text-anchor="middle" class="fill-ink" font-size="18" font-weight="700">雲端</text>
+      <text x="430" y="170" text-anchor="middle" class="fill-muted" font-size="14">遠端資料中心</text>
+      <text x="90" y="80" text-anchor="middle" class="fill-copper" font-size="15">快、資料不出門</text>
+      <text x="430" y="80" text-anchor="middle" class="fill-muted" font-size="15">算力大、能訓練大模型</text>
+      <text x="260" y="245" text-anchor="middle" class="fill-muted" font-size="14">越往右：延遲越長、頻寬越貴、隱私越難顧</text>
+    </svg>
+    <div class="card">
+      <ul class="pts">
+        <li><strong>雲端</strong>算力與儲存大，適合訓練、部署複雜模型</li>
+        <li><strong>邊緣</strong>適合要立刻反應的事，例如自駕車辨識號誌和行人</li>
+        <li>全部上傳雲端：成本、<dfn title="從輸入到得到結果花的時間">延遲</dfn>、隱私都是問題</li>
+        <li>全部放裝置：運算和電力不夠</li>
+        <li>常見分工：顧客偏好送雲端分析，當下的查詢在邊緣處理</li>
+      </ul>
+    </div>
+  </div>
+  <p class="src">依據 wiki：cloud-vs-edge（S1、S2）</p>
+</section>
+
+<!-- 6 訓練 vs 推論 -->
+<section class="slide" data-wiki="training-vs-inference,glossary">
+  <p class="eyebrow">前置概念</p>
+  <h2>先分清楚：訓練 vs 推論</h2>
+  <div class="cols">
+    <div class="card">
+      <h3><dfn title="用資料調整模型權重，包含前向傳遞與反向傳播">訓練</dfn>：學會</h3>
+      <ul class="pts">
+        <li>模型先亂猜，用<dfn title="衡量模型答案和正確答案差多少的公式">損失函數</dfn>算錯多少</li>
+        <li>再用<dfn title="把誤差從輸出層往回傳，算出每個權重該怎麼調整">反向傳播</dfn>調整<dfn title="神經網路中每條連線的數值">權重</dfn>，重複到誤差夠小</li>
+        <li>很花資源，通常在雲端做</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><dfn title="用訓練好的模型對新輸入做預測">推論</dfn>：使用</h3>
+      <ul class="pts">
+        <li>只做<dfn title="輸入一層一層經過網路算出輸出">前向傳遞</dfn>：新資料進去，答案出來</li>
+        <li>資源需求小很多，最常放到邊緣</li>
+        <li>模型出問題時，把資料送回雲端重新訓練，再換掉邊緣上的模型</li>
+      </ul>
+    </div>
+  </div>
+  <p class="lead">比喻：訓練是「讀書」，推論是「考試作答」。邊緣裝置多半只負責作答。</p>
+  <p class="src">依據 wiki：training-vs-inference（S1、S2）</p>
+</section>
+
+<!-- 7 元件 -->
+<section class="slide" data-wiki="edge-hardware">
+  <p class="eyebrow">系統長什麼樣</p>
+  <h2>一套邊緣 AI 系統有哪些元件</h2>
+  <div class="cols cols3">
+    <div class="card"><h3>邊緣裝置</h3><p>收資料：感測器、工業 IoT 機台、智慧攝影機。</p></div>
+    <div class="card"><h3>邊緣閘道／伺服器</h3><p>夾在裝置和雲端中間的路由器或伺服器，負責運算、儲存、網路。</p></div>
+    <div class="card"><h3>AI 加速器</h3><p><dfn title="專門加速神經網路運算的晶片">NPU</dfn>、<dfn title="擅長平行運算的處理器">GPU</dfn> 用平行運算，以較低功耗做推論。</p></div>
+  </div>
+  <p class="lead">邊緣節點可以小到信用卡大小的電腦，也可以大到好幾個機櫃；共同點是<strong>靠近資料來源</strong>。</p>
+  <p class="src">依據 wiki：edge-hardware（S1、S2）</p>
+</section>
+
+<!-- 8 六級 -->
+<section class="slide" data-wiki="edge-intelligence-levels">
+  <p class="eyebrow">分級思維</p>
+  <h2>不是二選一：邊緣智慧的六個等級</h2>
+  <div class="cols">
+    <table class="grid">
+      <thead><tr><th>等級</th><th>訓練在哪</th><th>推論在哪</th></tr></thead>
+      <tbody>
+        <tr><td>0 雲端智慧</td><td><span class="dot c"></span>雲端</td><td><span class="dot c"></span>雲端</td></tr>
+        <tr><td>L1</td><td><span class="dot c"></span>雲端</td><td><span class="dot e"></span>邊緣＋雲端合作</td></tr>
+        <tr><td>L2</td><td><span class="dot c"></span>雲端</td><td><span class="dot e"></span>邊緣內</td></tr>
+        <tr><td>L3</td><td><span class="dot c"></span>雲端</td><td><span class="dot d"></span>裝置上</td></tr>
+        <tr><td>L4</td><td><span class="dot e"></span>雲邊合作</td><td><span class="dot e"></span>雲邊合作</td></tr>
+        <tr><td>L5</td><td><span class="dot e"></span>邊緣內</td><td><span class="dot e"></span>邊緣內</td></tr>
+        <tr><td>L6</td><td><span class="dot d"></span>裝置上</td><td><span class="dot d"></span>裝置上</td></tr>
+      </tbody>
+    </table>
+    <div class="card">
+      <h3>等級越高，資料越不用離開裝置</h3>
+      <ul class="pts">
+        <li>好處：傳輸延遲降低、隱私提高、頻寬費用下降</li>
+        <li>代價：裝置上的計算延遲和耗電增加</li>
+        <li><strong>沒有最好的等級</strong>，要看應用需要什麼</li>
+      </ul>
+      <p class="term-note">例：手機相機辨識場景多半是 L3；<dfn title="資料留在各自手機、只上傳模型更新的協作訓練；第 13 頁介紹">聯邦學習</dfn>把訓練也搬到手機上。</p>
+    </div>
+  </div>
+  <p class="src">依據 wiki：edge-intelligence-levels（S2）</p>
+</section>
+
+<!-- 9 難題 -->
+<section class="slide" data-wiki="edge-hardware,tinyml-mcunet">
+  <p class="eyebrow">挑戰</p>
+  <h2>最大的難題：裝置太小</h2>
+  <div class="cols">
+    <div class="card">
+      <p class="big">2～3 個數量級</p>
+      <p><dfn title="便宜、省電、記憶體很小的單晶片電腦">微控制器（MCU）</dfn>的記憶體比手機小 2～3 個數量級（差一個數量級，就是多一個零）。</p>
+      <p class="term-note">跟雲端 GPU 比，更是小 5～6 個數量級。</p>
+    </div>
+    <div class="card">
+      <h3>兩種記憶體各卡一件事</h3>
+      <ul class="pts">
+        <li><dfn title="晶片上的高速可讀寫記憶體">SRAM</dfn>：限制運算中途的<dfn title="每一層算出來、要暫存的資料">激活值</dfn>大小</li>
+        <li><dfn title="存放程式與模型的非揮發記憶體">Flash</dfn>：限制模型本身的大小</li>
+        <li>所以光把模型變小還不夠，算到一半的資料也要小</li>
+      </ul>
+    </div>
+  </div>
+  <p class="lead">接下來兩頁就是業界的兩種解法。</p>
+  <p class="src">依據 wiki：edge-hardware、tinyml-mcunet（S5）</p>
+</section>
+
+<!-- 10 壓縮 -->
+<section class="slide" data-wiki="model-compression,pruning,quantization,sources">
+  <p class="eyebrow">解法 1</p>
+  <h2>把模型壓小：剪枝 → 量化 → 霍夫曼編碼</h2>
+  <div class="cols">
+    <div class="card">
+      <ul class="pts">
+        <li><dfn title="刪掉不重要的連線讓模型變小">剪枝</dfn>：刪掉不重要的連線，連線數少 9～13 倍</li>
+        <li><dfn title="降低模型數字的位元數">量化</dfn>：每條連線從 32 位元降到 5 位元</li>
+        <li><dfn title="出現越多次的值用越短的編碼">霍夫曼編碼</dfn>：再做無失真壓縮</li>
+        <li>三步合起來小 35～49 倍，<strong>準確率不變</strong></li>
+        <li>模型小到能放進晶片上的 SRAM，速度快 3～4 倍、能效好 3～7 倍</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>模型大小（MB，等比例）</h3>
+      <div class="bars">
+        <div class="bar-row"><span class="bar-label">AlexNet</span>
+          <div class="bar-track"><div class="bar before" style="width:43.5%">240</div><div class="bar after" style="width:1.25%"></div><span class="bar-label">壓縮後 6.9</span></div></div>
+        <div class="bar-row"><span class="bar-label">VGG-16</span>
+          <div class="bar-track"><div class="bar before" style="width:100%">552</div><div class="bar after" style="width:2.05%"></div><span class="bar-label">壓縮後 11.3</span></div></div>
+      </div>
+      <p class="term-note">資料：Deep Compression（Han 等，ICLR 2016），在<dfn title="大型影像辨識資料集，常用來比較模型準確率">ImageNet</dfn> 上測試。</p>
+    </div>
+  </div>
+  <p class="src">依據 wiki：model-compression、pruning、quantization（S3）</p>
+</section>
+
+<!-- 11 量化實務 -->
+<section class="slide" data-wiki="quantization">
+  <p class="eyebrow">實務</p>
+  <h2>量化在實務上怎麼做</h2>
+  <p class="lead">模型參數預設是 32 位元<dfn title="電腦表示小數的方式">浮點數</dfn>。<dfn title="拿訓練好的模型，在轉檔時直接量化">訓練後量化</dfn>不用重新訓練，轉檔時就能做。</p>
+  <table class="grid">
+    <thead><tr><th>方法</th><th>模型大小</th><th>速度</th><th>適用硬體</th></tr></thead>
+    <tbody>
+      <tr><td>動態範圍量化</td><td>約小 4 倍</td><td>快 2～3 倍</td><td>CPU</td></tr>
+      <tr><td>完整整數量化</td><td>約小 4 倍</td><td>快 3 倍以上</td><td>CPU、<dfn title="Google 給邊緣裝置用的 AI 加速晶片">Edge TPU</dfn>、微控制器</td></tr>
+      <tr><td>float16 量化</td><td>約小 2 倍</td><td>可用 GPU 加速</td><td>CPU、GPU</td></tr>
+    </tbody>
+  </table>
+  <ul class="pts">
+    <li>整數量化要準備一小批<dfn title="用來估計數值範圍的一小批資料">代表性資料</dfn>，大約 100～500 筆</li>
+    <li>量化完一定要測準確率；掉太多就改用<dfn title="訓練時就模擬量化誤差">量化感知訓練</dfn></li>
+  </ul>
+  <p class="src">依據 wiki：quantization（S4：Google LiteRT 官方文件）</p>
+</section>
+
+<!-- 12 MCUNet -->
+<section class="slide" data-wiki="tinyml-mcunet">
+  <p class="eyebrow">解法 2</p>
+  <h2>模型和推論引擎一起設計：MCUNet</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>兩個零件</h3>
+      <ul class="pts">
+        <li><dfn title="在記憶體限制下自動搜尋網路架構">TinyNAS</dfn>：在記憶體限制內，自動找出最適合的網路架構</li>
+        <li><dfn title="省記憶體的推論函式庫">TinyEngine</dfn>：省記憶體的推論引擎，比 TF-Lite Micro 快 1.7～3.3 倍</li>
+        <li>兩者一起設計，才塞得進微控制器</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>成果</h3>
+      <p class="big">&gt;70%</p>
+      <p>第一個在市售微控制器上，<dfn title="大型影像辨識資料集">ImageNet</dfn> <dfn title="模型第一個猜的答案就是正確答案的比例">top-1 準確率</dfn>超過 70% 的方法。</p>
+      <p>語音喚醒詞：91% 準確率、每秒 10 次推論。</p>
+    </div>
+  </div>
+  <p class="lead">這類「在微控制器上做機器學習」叫 <dfn title="在微控制器等極小裝置上做機器學習">TinyML</dfn>。</p>
+  <p class="src">依據 wiki：tinyml-mcunet（S5：Lin 等，NeurIPS 2020）</p>
+</section>
+
+<!-- 13 聯邦學習 -->
+<section class="slide" data-wiki="federated-learning">
+  <p class="eyebrow">延伸</p>
+  <h2>連訓練都在手機上：<dfn title="資料留在各自裝置、只上傳模型更新的協作訓練">聯邦學習</dfn></h2>
+  <div class="cols">
+    <svg class="diagram" viewBox="0 0 520 300" role="img" aria-label="聯邦學習四步驟循環">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="fill-copper"/></marker></defs>
+      <path d="M340 55 Q400 70 420 118" fill="none" class="stroke-copper" stroke-width="2" marker-end="url(#ah)"/>
+      <path d="M420 182 Q400 230 340 248" fill="none" class="stroke-copper" stroke-width="2" marker-end="url(#ah)"/>
+      <path d="M180 248 Q120 230 100 182" fill="none" class="stroke-copper" stroke-width="2" marker-end="url(#ah)"/>
+      <path d="M100 118 Q120 70 180 55" fill="none" class="stroke-copper" stroke-width="2" marker-end="url(#ah)"/>
+      <rect x="185" y="20" width="150" height="54" rx="8" class="fill-panel stroke-line"/>
+      <text x="260" y="44" text-anchor="middle" class="fill-ink" font-size="15" font-weight="700">① 下載目前模型</text>
+      <text x="260" y="64" text-anchor="middle" class="fill-muted" font-size="13">雲端 → 手機</text>
+      <rect x="355" y="123" width="150" height="54" rx="8" class="fill-copper-soft"/>
+      <text x="430" y="147" text-anchor="middle" class="fill-ink" font-size="15" font-weight="700">② 用手機資料學</text>
+      <text x="430" y="167" text-anchor="middle" class="fill-muted" font-size="13">資料不離開手機</text>
+      <rect x="185" y="226" width="150" height="54" rx="8" class="fill-panel stroke-line"/>
+      <text x="260" y="250" text-anchor="middle" class="fill-ink" font-size="15" font-weight="700">③ 上傳小更新</text>
+      <text x="260" y="270" text-anchor="middle" class="fill-muted" font-size="13">加密傳送</text>
+      <rect x="15" y="123" width="150" height="54" rx="8" class="fill-trace-soft"/>
+      <text x="90" y="147" text-anchor="middle" class="fill-ink" font-size="15" font-weight="700">④ 平均所有人</text>
+      <text x="90" y="167" text-anchor="middle" class="fill-muted" font-size="13">改進共享模型</text>
+    </svg>
+    <div class="card">
+      <ul class="pts">
+        <li>例子：Google 的 Gboard 鍵盤，用「建議字有沒有被點」改進下一版</li>
+        <li>只在手機閒置、充電、連免費 Wi-Fi 時訓練</li>
+        <li>比天真做法少 10～100 倍通訊量</li>
+        <li>伺服器要有數百到數千台手機參與，才解得開平均後的更新</li>
+        <li>限制：需要人工仔細標註的任務不適合</li>
+      </ul>
+    </div>
+  </div>
+  <p class="src">依據 wiki：federated-learning（S6：Google Research 2017）</p>
+</section>
+
+<!-- 14 指標 -->
+<section class="slide" data-wiki="inference-kpis">
+  <p class="eyebrow">怎麼評估</p>
+  <h2>評估一個邊緣 AI 系統的六個指標</h2>
+  <div class="cols cols3">
+    <div class="card"><h3>延遲</h3><p>前處理到出結果的總時間。AR/VR、機器人常要求約 100 毫秒。</p></div>
+    <div class="card"><h3>準確率</h3><p>猜對的比例。自駕車、人臉驗證要求極高。</p></div>
+    <div class="card"><h3>能耗</h3><p>裝置多半靠電池，運算和傳輸都耗電。</p></div>
+    <div class="card"><h3>隱私</h3><p>資料越靠近來源處理，越好保護。</p></div>
+    <div class="card"><h3>通訊負擔</h3><p>只要不是純裝置推論，都受網路頻寬影響。</p></div>
+    <div class="card"><h3>記憶體占用</h3><p>手機沒有雲端 GPU 的專用高頻寬記憶體。</p></div>
+  </div>
+  <p class="src">依據 wiki：inference-kpis（S2）</p>
+</section>
+
+<!-- 15 誤解 -->
+<section class="slide" data-wiki="misconceptions">
+  <p class="eyebrow">澄清</p>
+  <h2>五個常見誤解</h2>
+  <div class="myth">
+    <p class="no">邊緣 AI 就是不用雲端</p><p class="yes">雲端和邊緣互補，雲端常負責訓練與大量分析</p>
+    <p class="no">邊緣 AI 只能做推論</p><p class="yes">聯邦學習讓手機也能參與訓練</p>
+    <p class="no">放不下就換更強的晶片</p><p class="yes">壓縮可以小 35～49 倍，準確率不變</p>
+    <p class="no">剪越多權重就越省電</p><p class="yes">省不省電要看剪的是哪一層</p>
+    <p class="no">等級越高（越靠近裝置）越好</p><p class="yes">沒有通用最佳等級，看應用決定</p>
+  </div>
+  <p class="src">依據 wiki：misconceptions（S1、S2、S3、S6）</p>
+</section>
+
+<!-- 16 小測驗 -->
+<section class="slide" data-wiki="misconceptions,edge-intelligence-levels,quantization,training-vs-inference">
+  <p class="eyebrow">自我檢查</p>
+  <h2>小測驗</h2>
+  <div class="quiz">
+    <div class="q" data-answer="b">
+      <p>1. 邊緣裝置最常負責哪一件事？</p>
+      <div class="opts"><button type="button" data-k="a">訓練大模型</button><button type="button" data-k="b">推論</button><button type="button" data-k="c">儲存所有資料</button></div>
+      <p class="fb" hidden>推論只做前向傳遞，資源需求比訓練小很多，所以最常放在邊緣。</p>
+    </div>
+    <div class="q" data-answer="c">
+      <p>2. 邊緣智慧等級從 L1 升到 L6，下列何者「不一定」變好？</p>
+      <div class="opts"><button type="button" data-k="a">隱私</button><button type="button" data-k="b">頻寬成本</button><button type="button" data-k="c">裝置耗電</button></div>
+      <p class="fb" hidden>等級越高資料越少外送，但裝置要自己算更多，計算延遲和耗電會增加。</p>
+    </div>
+    <div class="q" data-answer="a">
+      <p>3. 想把模型放進微控制器，用 LiteRT 該選哪種訓練後量化？</p>
+      <div class="opts"><button type="button" data-k="a">完整整數量化</button><button type="button" data-k="b">float16 量化</button><button type="button" data-k="c">不用量化</button></div>
+      <p class="fb" hidden>微控制器常需要純整數模型，完整整數量化支援微控制器。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 17 回顧 -->
+<section class="slide" data-wiki="sources">
+  <p class="eyebrow">回顧</p>
+  <h2>三句話帶走</h2>
+  <div class="cols">
+    <div class="card">
+      <ul class="pts">
+        <li>邊緣 AI 把 AI 放到靠近資料的地方，換來速度、隱私和斷網也能用</li>
+        <li>它和雲端是分工，不是取代；用六個等級思考分工方式</li>
+        <li>小裝置跑得動，靠的是壓縮模型，以及軟硬體一起設計</li>
+      </ul>
+      <p class="term-note">想看每句話的出處：<a href="https://claude.ai/artifact/HxxLbez77ph1iHMyWF9V7J" target="_blank" rel="noopener">Edge AI LLM Wiki</a></p>
+    </div>
+    <div class="card">
+      <h3>參考來源</h3>
+      <ul class="pts refs" style="font-size:14px">
+        <li>S1 IBM Think〈<a href="https://www.ibm.com/think/topics/edge-ai" target="_blank" rel="noopener">What is edge AI?</a>〉2023／2026 更新</li>
+        <li>S2 Zhou et al.〈<a href="https://arxiv.org/abs/1905.10083" target="_blank" rel="noopener">Edge Intelligence</a>〉Proc. IEEE 2019</li>
+        <li>S3 Han et al.〈<a href="https://arxiv.org/abs/1510.00149" target="_blank" rel="noopener">Deep Compression</a>〉ICLR 2016</li>
+        <li>S4 Google〈<a href="https://developers.google.com/edge/litert/models/post_training_quantization" target="_blank" rel="noopener">LiteRT Post-training quantization</a>〉</li>
+        <li>S5 Lin et al.〈<a href="https://arxiv.org/abs/2007.10319" target="_blank" rel="noopener">MCUNet</a>〉NeurIPS 2020</li>
+        <li>S6 McMahan &amp; Ramage〈<a href="https://research.google/blog/federated-learning-collaborative-machine-learning-without-centralized-training-data/" target="_blank" rel="noopener">Federated Learning</a>〉2017</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</div>
+<div class="bar-ui">
+  <button type="button" id="prev" aria-label="上一頁">←</button>
+  <div class="progress" aria-hidden="true"><i id="prog"></i></div>
+  <span class="count" id="count">1 / 17</span>
+  <button type="button" id="next" aria-label="下一頁">→</button>
+  <button type="button" id="notesBtn">備註</button>
+</div>
+</div>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var n = slides.length, cur = 0;
+  function go(i) {
+    cur = Math.max(0, Math.min(n - 1, i));
+    slides.forEach(function (s, k) { s.hidden = k !== cur; });
+    document.getElementById("count").textContent = (cur + 1) + " / " + n;
+    document.getElementById("prog").style.width = ((cur + 1) / n * 100) + "%";
+    document.getElementById("prev").disabled = cur === 0;
+    document.getElementById("next").disabled = cur === n - 1;
+    var h = "#s" + (cur + 1);
+    if (location.hash !== h) history.replaceState(null, "", h);
+  }
+  function fromHash() { var m = /^#s(\d+)$/.exec(location.hash); go(m ? +m[1] - 1 : 0); }
+  document.getElementById("prev").onclick = function () { go(cur - 1); };
+  document.getElementById("next").onclick = function () { go(cur + 1); };
+  document.getElementById("notesBtn").onclick = function () { document.body.classList.toggle("show-notes"); };
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); go(cur + 1); }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(cur - 1); }
+    else if (e.key === "Home") go(0); else if (e.key === "End") go(n - 1);
+    else if (e.key === "n" || e.key === "N") document.body.classList.toggle("show-notes");
+  });
+  var sx = null;
+  document.getElementById("stage").addEventListener("touchstart", function (e) { sx = e.touches[0].clientX; }, { passive: true });
+  document.getElementById("stage").addEventListener("touchend", function (e) {
+    if (sx === null) return; var dx = e.changedTouches[0].clientX - sx; sx = null;
+    if (Math.abs(dx) > 60) go(cur + (dx < 0 ? 1 : -1));
+  });
+  document.querySelectorAll(".q").forEach(function (q) {
+    q.querySelectorAll("button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var ok = b.dataset.k === q.dataset.answer;
+        q.querySelectorAll("button").forEach(function (x) { x.classList.remove("right", "wrong"); if (x.dataset.k === q.dataset.answer) x.classList.add("right"); });
+        if (!ok) b.classList.add("wrong");
+        q.querySelector(".fb").hidden = false;
+      });
+    });
+  });
+  window.addEventListener("hashchange", fromHash);
+  fromHash();
+})();
+</script>

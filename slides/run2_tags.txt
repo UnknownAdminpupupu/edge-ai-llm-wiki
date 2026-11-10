@@ -1,0 +1,101 @@
+為什麼你的手錶、門鈴 => frame
+邊緣 AI 的定義，和 => frame
+什麼情況一定要把 AI => frame
+小裝置跑得動大模型的兩個方法 => frame
+用六個指標評估一個邊緣 AI 系統。 => frame
+感測資料要先上傳 => cloud-vs-edge#4
+網路不穩或沒訊號時 => edge-ai#5
+心率、位置這些私人資料 => cloud-vs-edge#4 use-cases#1
+穿戴裝置在本機分析心率 => use-cases#1
+不用等網路，反應快 => edge-ai#5
+資料留在身上 => use-cases#1
+右邊這種做法 => frame
+把 AI 模型直接放在本地的裝置上 => edge-ai#1
+IBM 等企業文章多半 => edge-ai#4
+同時利用「端裝置、邊緣節點、雲端」 => edge-ai#3
+Zhou 等人（2019） => edge-ai#4
+關鍵字只有一個 => edge-ai#1
+<svg class="diagram" viewBox="0 0 520 300" role="img" aria-label="裝置 => cloud-vs-edge#1 cloud-vs-edge#4
+算力與儲存大，適合訓練 => cloud-vs-edge#1
+適合要立刻反應的事 => cloud-vs-edge#2
+全部上傳雲端：成本 => cloud-vs-edge#4
+全部放裝置：運算和電力不夠 => cloud-vs-edge#5
+常見分工：顧客偏好 => cloud-vs-edge#6
+模型先亂猜 => training-vs-inference#1
+再用<dfn => training-vs-inference#1
+很花資源，通常在雲端做 => training-vs-inference#3
+：新資料進去，答案出來 => training-vs-inference#2
+資源需求小很多，最常放到邊緣 => training-vs-inference#3
+模型出問題時，把資料送回雲端 => training-vs-inference#4
+比喻：訓練是「讀書」 => frame
+收資料：感測器 => edge-hardware#1
+夾在裝置和雲端中間 => edge-hardware#2 edge-hardware#3
+用平行運算，以較低功耗做推論 => edge-hardware#4
+邊緣節點可以小到信用卡 => edge-hardware#5
+<tr><td>0 雲端智慧 => edge-intelligence-levels#1
+<tr><td>L1 => edge-intelligence-levels#2
+<tr><td>L2 => edge-intelligence-levels#3
+<tr><td>L3 => edge-intelligence-levels#4
+<tr><td>L4 => edge-intelligence-levels#5
+<tr><td>L5 => edge-intelligence-levels#6
+<tr><td>L6 => edge-intelligence-levels#7
+好處：傳輸延遲降低 => edge-intelligence-levels#8
+代價：裝置上的計算延遲 => edge-intelligence-levels#8
+<li><strong>沒有最好的等級 => edge-intelligence-levels#9
+例：手機相機辨識場景 => edge-intelligence-levels#4
+<p class="big">2～3 個數量級 => edge-hardware#6
+的記憶體比手機小 2～3 個數量級（差一個 => edge-hardware#6
+跟雲端 GPU 比 => tinyml-mcunet#2
+：限制運算中途的 => tinyml-mcunet#3
+：限制模型本身的大小 => tinyml-mcunet#3
+所以光把模型變小還不夠 => tinyml-mcunet#3
+接下來兩頁就是業界的兩種解法 => frame
+：刪掉不重要的連線，連線數少 => pruning#3
+：每條連線從 32 位元降到 5 位元 => quantization#3
+：再做無失真壓縮 => model-compression#3
+三步合起來小 35～49 倍 => model-compression#4
+模型小到能放進晶片上的 SRAM => edge-hardware#8 model-compression#5
+<div class="bars"> => model-compression#4
+資料：Deep Compression（Han 等 => model-compression#4
+模型參數預設是 32 位元 => quantization#1 quantization#4
+<tr><td>動態範圍量化 => quantization#table
+<tr><td>完整整數量化 => quantization#table
+<tr><td>float16 量化 => quantization#table
+整數量化要準備一小批 => quantization#5
+量化完一定要測準確率 => quantization#7
+：在記憶體限制內，自動找出 => tinyml-mcunet#4
+：省記憶體的推論引擎，比 TF-Lite => tinyml-mcunet#4 tinyml-mcunet#7
+兩者一起設計，才塞得進 => tinyml-mcunet#4
+<p class="big">&gt;70% => tinyml-mcunet#5
+第一個在市售微控制器上 => tinyml-mcunet#5
+語音喚醒詞：91% => tinyml-mcunet#6
+這類「在微控制器上做機器學習」 => frame
+<svg class="diagram" viewBox="0 0 520 300" role="img" aria-label="聯邦 => federated-learning#2
+例子：Google 的 Gboard => federated-learning#4
+只在手機閒置、充電 => federated-learning#6
+比天真做法少 10～100 => federated-learning#5
+伺服器要有數百到數千台 => federated-learning#7
+限制：需要人工仔細標註 => federated-learning#8
+前處理到出結果的總時間 => inference-kpis#1 inference-kpis#2
+猜對的比例。 => inference-kpis#3
+裝置多半靠電池 => inference-kpis#4
+資料越靠近來源處理，越好保護 => inference-kpis#5
+只要不是純裝置推論 => inference-kpis#6
+手機沒有雲端 GPU 的專用 => inference-kpis#7
+<p class="no">邊緣 AI 就是不用雲端 => misconceptions#1
+雲端和邊緣互補，雲端常負責 => misconceptions#1
+<p class="no">邊緣 AI 只能做推論 => misconceptions#2
+<p class="yes">聯邦學習讓手機也能參與訓練 => misconceptions#2
+放不下就換更強的晶片 => misconceptions#3
+壓縮可以小 35～49 倍 => misconceptions#3
+剪越多權重就越省電 => misconceptions#4
+省不省電要看剪的是哪一層 => misconceptions#4
+等級越高（越靠近裝置）越好 => misconceptions#6
+沒有通用最佳等級，看應用決定 => misconceptions#6
+<div class="q" data-answer="b"> => training-vs-inference#3
+<div class="q" data-answer="c"> => edge-intelligence-levels#8
+<div class="q" data-answer="a"> => quantization#table quantization#6
+邊緣 AI 把 AI 放到靠近資料的地方 => edge-ai#3
+它和雲端是分工，不是取代 => cloud-vs-edge#6 edge-intelligence-levels#9
+小裝置跑得動，靠的是壓縮模型 => model-compression#4 tinyml-mcunet#4
+想看每句話的出處 => frame

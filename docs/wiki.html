@@ -1,0 +1,1763 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Edge AI Wiki</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout：左側目錄（像電路板上的元件清單）＋右側閱讀欄；手機改成頂部可展開目錄 */
+:root {
+  --bg: #f2f4f3;        /* 防焊漆淡綠灰 */
+  --panel: #e6ebe8;
+  --ink: #18201d;
+  --muted: #5a6762;
+  --line: #cbd4d0;
+  --copper: #a8541f;    /* 銅箔走線 */
+  --copper-soft: #f3dfcf;
+  --g1: #2f6f5e; --g2: #a8541f; --g3: #5a6a8a;
+  --f-display: "Space Grotesk", "Noto Sans TC", system-ui, sans-serif;
+  --f-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121715; --panel: #1a211e; --ink: #e3e9e6; --muted: #9aa8a2; --line: #2c3632;
+  --copper: #e09662; --copper-soft: #3a2a1f; --g1: #6cbfa7; --g2: #e09662; --g3: #9fb0d4; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121715; --panel: #1a211e; --ink: #e3e9e6; --muted: #9aa8a2; --line: #2c3632;
+  --copper: #e09662; --copper-soft: #3a2a1f; --g1: #6cbfa7; --g2: #e09662; --g3: #9fb0d4; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.75 }
+.wrap { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 100% }
+nav { background: var(--panel); border-right: 1px solid var(--line); padding-block: 24px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: 16px;
+  position: sticky; top: env(safe-area-inset-top, 0px); height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 2px }
+.brand { font-family: var(--f-display); font-weight: 700; font-size: 20px; letter-spacing: .01em; margin: 0 0 4px }
+.brand span { color: var(--copper) }
+.by { color: var(--muted); font-size: 12px; margin: 0 0 16px }
+nav a { color: var(--ink); text-decoration: none; font-size: 14px; padding: 4px 8px; border-radius: 4px; line-height: 1.45 }
+nav a:hover { background: var(--copper-soft) }
+nav a.on { background: var(--copper); color: var(--bg) }
+.navg { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 16px 0 4px 8px }
+.menu-btn { display: none }
+.links { display: flex; flex-direction: column; gap: 2px }
+main { padding-block: 40px 80px; padding-left: max(16px, 5vw); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+section { max-width: 72ch; overflow-wrap: anywhere }
+.crumb { font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; color: var(--copper); margin: 0 }
+h1 { font-family: var(--f-display); font-size: clamp(26px, 4vw, 36px); line-height: 1.25; margin: 4px 0 20px; text-wrap: balance }
+h2 { font-family: var(--f-display); font-size: 20px; margin: 32px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--line) }
+blockquote { margin: 0 0 20px; padding: 12px 16px; background: var(--copper-soft); border-radius: 6px; font-size: 17px }
+blockquote p { margin: 0 }
+ul { padding-left: 1.2em } li { margin: 4px 0 }
+a { color: var(--copper) }
+a.wl { text-decoration: none; border-bottom: 1px dashed var(--copper); font-weight: 500 }
+.tag { display: inline-block; font-family: var(--f-mono); font-size: 11px; line-height: 1; padding: 3px 5px; margin-left: 4px; border-radius: 3px;
+  background: var(--panel); border: 1px solid var(--line); color: var(--muted); text-decoration: none; vertical-align: 1px }
+.tag:hover { border-color: var(--copper); color: var(--copper) }
+.tag.syn { font-style: normal }
+table { border-collapse: collapse; width: 100%; font-size: 14px; display: block; overflow-x: auto }
+th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top }
+th { background: var(--panel); font-weight: 700 }
+code, pre { font-family: var(--f-mono); font-size: 13px }
+pre { background: var(--panel); padding: 12px; border-radius: 6px; overflow-x: auto }
+.lede { font-size: 17px; color: var(--muted) }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 20px 0 }
+.stats div { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px; display: flex; flex-direction: column }
+.stats b { font-family: var(--f-mono); font-size: 28px; color: var(--copper); font-variant-numeric: tabular-nums }
+.stats span { font-size: 13px; color: var(--muted) }
+.graph { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px }
+.graph svg { width: 100%; min-width: 560px; height: auto; display: block }
+.edge { stroke: var(--line); stroke-width: 1.2 }
+.node { stroke: var(--bg); stroke-width: 2 }
+.node.g1 { fill: var(--g1) } .node.g2 { fill: var(--g2) } .node.g3 { fill: var(--g3) }
+.nlabel { fill: var(--ink); font-size: 12px; font-family: var(--f-body) }
+.graph a:hover .nlabel { fill: var(--copper); text-decoration: underline }
+.hint { font-size: 14px; color: var(--muted) }
+.lg { display: inline-flex; align-items: center; gap: 4px; margin-left: 12px; font-size: 13px }
+.lg::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: currentColor }
+.lg.g1 { color: var(--g1) } .lg.g2 { color: var(--g2) } .lg.g3 { color: var(--g3) }
+:focus-visible { outline: 2px solid var(--copper); outline-offset: 2px }
+@media (max-width: 760px) {
+  .wrap { grid-template-columns: minmax(0, 1fr) }
+  nav { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+  nav .links { display: none; flex-direction: column; gap: 2px }
+  nav.open .links { display: flex }
+  .menu-btn { display: inline-block; align-self: flex-start; font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--line); background: var(--bg); color: var(--ink) }
+  main { padding-left: max(16px, env(safe-area-inset-left, 0px)) }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+}
+@media (prefers-reduced-motion: no-preference) { section:not([hidden]) { animation: in .25s ease-out } @keyframes in { from { transform: translateY(6px) } to { transform: none } } }
+</style>
+<div class="wrap">
+  <nav id="nav">
+    <p class="brand">Edge AI <span>Wiki</span></p>
+    <p class="by">北科電子 112360106 黃資宸</p>
+    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false">目錄</button>
+    <div class="links">
+<a href="#home" class="navhome">首頁與關係圖</a>
+<p class="navg">概念</p>
+<a href="#edge-ai">邊緣 AI（Edge AI）</a>
+<a href="#cloud-vs-edge">雲端 AI vs 邊緣 AI</a>
+<a href="#training-vs-inference">訓練 vs 推論（Training vs Inference）</a>
+<a href="#edge-intelligence-levels">邊緣智慧的六個等級</a>
+<p class="navg">技術</p>
+<a href="#model-compression">模型壓縮（Model Compression）</a>
+<a href="#pruning">剪枝（Pruning）</a>
+<a href="#quantization">量化（Quantization）</a>
+<a href="#tinyml-mcunet">TinyML 與 MCUNet</a>
+<a href="#federated-learning">聯邦學習（Federated Learning）</a>
+<p class="navg">支撐</p>
+<a href="#edge-hardware">邊緣 AI 的硬體與元件</a>
+<a href="#inference-kpis">評估邊緣推論的六個指標</a>
+<a href="#use-cases">邊緣 AI 的應用例子</a>
+<a href="#misconceptions">常見誤解</a>
+<a href="#glossary">術語表</a>
+<a href="#sources">來源清單</a>
+<p class="navg">原始來源 raw/</p>
+<a href="#raw-s1">S1　What is edge AI?</a>
+<a href="#raw-s2">S2　Edge Intelligence: Pavi</a>
+<a href="#raw-s3">S3　Deep Compression: Compr</a>
+<a href="#raw-s4">S4　Post-training quantizat</a>
+<a href="#raw-s5">S5　MCUNet: Tiny Deep Learn</a>
+<a href="#raw-s6">S6　Federated Learning: Col</a>
+<p class="navg">過程紀錄</p>
+<a href="#log">執行紀錄 log.md</a>
+<a href="#schema">Schema（CLAUDE.md）</a>
+<a href="#talk-f">Loop／Graph 設計：Workflow v</a>
+<a href="#talk-n0">N0／N1：範圍與來源討論紀錄（2026-11-</a>
+<a href="#talk-n2">N2：逐篇 Ingest 前的討論（先討論、後寫</a>
+<p class="navg">檢查紀錄 checks/</p>
+<a href="#chk-lint-run1-pass1">Run1 Wiki Lint 第 1 次</a>
+<a href="#chk-lint-run1-pass2">Run1 Wiki Lint 第 2 次</a>
+<a href="#chk-lint-run1-pass4">Run1 Wiki Lint 最終</a>
+<a href="#chk-slides-run1-pass1">Run1 簡報檢查 第 1 次</a>
+<a href="#chk-slides-run1-pass2">Run1 簡報檢查 第 2 次</a>
+<a href="#chk-outline-run2-pass1">Run2 大綱檢查 第 1 次</a>
+<a href="#chk-outline-run2-pass2">Run2 大綱檢查 第 2 次</a>
+<a href="#chk-slides-run2-pass1">Run2 逐句檢查 第 1 次</a>
+<a href="#chk-slides-run2-pass2">Run2 逐句檢查 第 2 次</a>
+<a href="#chk-warn-review-run2">Run2 WARN 人工複查</a>
+    </div>
+  </nav>
+  <main id="main">
+<section id="p-home" data-page="home"><p class="crumb">LLM Wiki 首頁</p><h1>Edge AI 知識庫</h1>
+<p class="lede">這是一個用 LLM 維護的知識庫：6 篇原始來源經過「先討論、後寫入」的 ingest，整理成 15 個互相連結的頁面。每一句事實後面都有來源標記，點下去可以看到原始筆記。</p>
+<p class="hint">用這個 wiki 做出的教學簡報：<a href="slides.html">Edge AI 入門（HTML 簡報）</a>　·　流程設計：<a class="wl" href="#talk-f">Loop／Graph 設計 v1 → v2</a>　·　<a class="wl" href="#log">執行紀錄</a></p>
+<div class="stats">
+  <div><b>6</b><span>原始來源</span></div>
+  <div><b>15</b><span>wiki 頁面</span></div>
+  <div><b>38</b><span>頁面連結</span></div>
+  <div><b>126</b><span>來源標記</span></div>
+</div>
+<h2>頁面關係圖</h2>
+<p class="hint">點圓點開啟頁面。圓點越大，代表跟越多頁相連。<span class="lg g1">概念</span><span class="lg g2">技術</span><span class="lg g3">支撐</span></p>
+<div class="graph"><svg viewBox="0 0 760 460" role="img" aria-label="wiki 頁面關係圖"><line x1="469.0" y1="70.1" x2="380.0" y2="55.0" class="edge"/><line x1="469.0" y1="70.1" x2="588.0" y2="175.9" class="edge"/><line x1="469.0" y1="70.1" x2="190.6" y2="317.5" class="edge"/><line x1="469.0" y1="70.1" x2="172.0" y2="175.9" class="edge"/><line x1="380.0" y1="55.0" x2="251.4" y2="371.6" class="edge"/><line x1="380.0" y1="55.0" x2="588.0" y2="175.9" class="edge"/><line x1="380.0" y1="55.0" x2="217.4" y2="112.9" class="edge"/><line x1="380.0" y1="55.0" x2="597.6" y2="248.3" class="edge"/><line x1="380.0" y1="55.0" x2="291.0" y2="70.1" class="edge"/><line x1="380.0" y1="55.0" x2="542.6" y2="112.9" class="edge"/><line x1="380.0" y1="55.0" x2="162.4" y2="248.3" class="edge"/><line x1="251.4" y1="371.6" x2="217.4" y2="112.9" class="edge"/><line x1="251.4" y1="371.6" x2="597.6" y2="248.3" class="edge"/><line x1="251.4" y1="371.6" x2="508.6" y2="371.6" class="edge"/><line x1="251.4" y1="371.6" x2="425.5" y2="401.2" class="edge"/><line x1="588.0" y1="175.9" x2="334.5" y2="401.2" class="edge"/><line x1="588.0" y1="175.9" x2="190.6" y2="317.5" class="edge"/><line x1="588.0" y1="175.9" x2="172.0" y2="175.9" class="edge"/><line x1="588.0" y1="175.9" x2="542.6" y2="112.9" class="edge"/><line x1="334.5" y1="401.2" x2="217.4" y2="112.9" class="edge"/><line x1="334.5" y1="401.2" x2="172.0" y2="175.9" class="edge"/><line x1="334.5" y1="401.2" x2="542.6" y2="112.9" class="edge"/><line x1="334.5" y1="401.2" x2="162.4" y2="248.3" class="edge"/><line x1="217.4" y1="112.9" x2="569.4" y2="317.5" class="edge"/><line x1="217.4" y1="112.9" x2="508.6" y2="371.6" class="edge"/><line x1="217.4" y1="112.9" x2="291.0" y2="70.1" class="edge"/><line x1="217.4" y1="112.9" x2="425.5" y2="401.2" class="edge"/><line x1="217.4" y1="112.9" x2="542.6" y2="112.9" class="edge"/><line x1="190.6" y1="317.5" x2="597.6" y2="248.3" class="edge"/><line x1="172.0" y1="175.9" x2="597.6" y2="248.3" class="edge"/><line x1="172.0" y1="175.9" x2="569.4" y2="317.5" class="edge"/><line x1="172.0" y1="175.9" x2="508.6" y2="371.6" class="edge"/><line x1="597.6" y1="248.3" x2="569.4" y2="317.5" class="edge"/><line x1="597.6" y1="248.3" x2="508.6" y2="371.6" class="edge"/><line x1="597.6" y1="248.3" x2="425.5" y2="401.2" class="edge"/><line x1="569.4" y1="317.5" x2="508.6" y2="371.6" class="edge"/><line x1="508.6" y1="371.6" x2="425.5" y2="401.2" class="edge"/><line x1="425.5" y1="401.2" x2="162.4" y2="248.3" class="edge"/><a href="#edge-ai"><circle cx="380.0" cy="55.0" r="12.2" class="node g1"/><text x="380.0" y="43.0" text-anchor="middle" class="nlabel">邊緣 AI</text></a><a href="#cloud-vs-edge"><circle cx="469.0" cy="70.1" r="8.6" class="node g1"/><text x="479.0" y="74.1" text-anchor="start" class="nlabel">雲端 AI vs 邊緣 AI</text></a><a href="#training-vs-inference"><circle cx="542.6" cy="112.9" r="8.6" class="node g1"/><text x="552.6" y="116.9" text-anchor="start" class="nlabel">訓練 vs 推論</text></a><a href="#edge-intelligence-levels"><circle cx="588.0" cy="175.9" r="10.4" class="node g1"/><text x="598.0" y="179.9" text-anchor="start" class="nlabel">邊緣智慧的六個等級</text></a><a href="#model-compression"><circle cx="597.6" cy="248.3" r="11.3" class="node g2"/><text x="607.6" y="252.3" text-anchor="start" class="nlabel">模型壓縮</text></a><a href="#pruning"><circle cx="569.4" cy="317.5" r="8.6" class="node g2"/><text x="579.4" y="321.5" text-anchor="start" class="nlabel">剪枝</text></a><a href="#quantization"><circle cx="508.6" cy="371.6" r="10.4" class="node g2"/><text x="518.6" y="375.6" text-anchor="start" class="nlabel">量化</text></a><a href="#tinyml-mcunet"><circle cx="425.5" cy="401.2" r="9.5" class="node g2"/><text x="435.5" y="405.2" text-anchor="start" class="nlabel">TinyML 與 MCUNet</text></a><a href="#federated-learning"><circle cx="334.5" cy="401.2" r="9.5" class="node g2"/><text x="324.5" y="405.2" text-anchor="end" class="nlabel">聯邦學習</text></a><a href="#edge-hardware"><circle cx="251.4" cy="371.6" r="9.5" class="node g3"/><text x="241.4" y="375.6" text-anchor="end" class="nlabel">邊緣 AI 的硬體與元件</text></a><a href="#inference-kpis"><circle cx="190.6" cy="317.5" r="7.7" class="node g3"/><text x="180.6" y="321.5" text-anchor="end" class="nlabel">評估邊緣推論的六個指標</text></a><a href="#use-cases"><circle cx="162.4" cy="248.3" r="7.7" class="node g3"/><text x="152.4" y="252.3" text-anchor="end" class="nlabel">邊緣 AI 的應用例子</text></a><a href="#misconceptions"><circle cx="172.0" cy="175.9" r="10.4" class="node g3"/><text x="162.0" y="179.9" text-anchor="end" class="nlabel">常見誤解</text></a><a href="#glossary"><circle cx="217.4" cy="112.9" r="12.2" class="node g3"/><text x="207.4" y="116.9" text-anchor="end" class="nlabel">術語表</text></a><a href="#sources"><circle cx="291.0" cy="70.1" r="6.8" class="node g3"/><text x="281.0" y="74.1" text-anchor="end" class="nlabel">來源清單</text></a></svg></div>
+<h2>三層架構</h2>
+<table><thead><tr><th>層</th><th>內容</th><th>規則</th></tr></thead><tbody>
+<tr><td>raw/</td><td>6 篇來源的摘錄筆記</td><td>建立後不改，記 URL 與讀取日期</td></tr>
+<tr><td>wiki/</td><td>15 個概念頁＋索引＋紀錄</td><td>每句事實要有 S 編號，數字要能在 raw 找到</td></tr>
+<tr><td>schema</td><td>CLAUDE.md</td><td>頁面格式、衝突與舊資料的處理方式</td></tr>
+</tbody></table>
+</section>
+<section id="p-edge-ai" data-page="edge-ai" hidden><p class="crumb">Edge AI Wiki</p><h1>邊緣 AI（Edge AI）</h1><blockquote>
+<p>把 AI 模型放到靠近資料產生的地方（手機、感測器、工廠閘道）去執行，而不是把所有資料都傳到遠端雲端。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>狹義定義：把 AI 演算法與模型直接部署在本地的邊緣裝置（例如感測器、IoT 裝置）上，不必一直依賴雲端就能即時處理資料。<a class="tag" href="#raw-s1">S1</a></li>
+<li>可以理解成「邊緣運算（edge computing）＋人工智慧」。<a class="tag" href="#raw-s1">S1</a></li>
+<li>廣義定義：邊緣智慧不只是「在裝置上跑模型」，而是同時利用端裝置、邊緣節點、雲端資料中心三層資源，來完成模型的訓練與推論。<a class="tag" href="#raw-s2">S2</a></li>
+<li>⚠️ 衝突：S1 用狹義定義，S2 明確主張狹義定義太窄。本 wiki 採用 S2 的廣義定義，並把 S1 的說法視為目前最常見的形式。<a class="tag" href="#raw-s1">S1</a><a class="tag" href="#raw-s2">S2</a></li>
+<li>有沒有網路連線都能處理，回應可以在毫秒等級完成。<a class="tag" href="#raw-s1">S1</a></li>
+<li>為什麼需要：資料大量產生在手機與 IoT 裝置上；全部傳回雲端會有費用、延遲與隱私問題，全部在裝置上跑又受限於運算與電力。<a class="tag" href="#raw-s2">S2</a></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#cloud-vs-edge">雲端 AI vs 邊緣 AI</a>：和雲端 AI 比較各自的長處。</li>
+<li><a class="wl" href="#training-vs-inference">訓練 vs 推論（Training vs Inference）</a>：邊緣最常做的是「推論」。</li>
+<li><a class="wl" href="#edge-intelligence-levels">邊緣智慧的六個等級</a>：廣義定義下的六個等級。</li>
+<li><a class="wl" href="#edge-hardware">邊緣 AI 的硬體與元件</a>：組成邊緣 AI 系統的硬體元件。</li>
+<li><a class="wl" href="#use-cases">邊緣 AI 的應用例子</a>：生活與產業中的例子。</li>
+<li><a class="wl" href="#model-compression">模型壓縮（Model Compression）</a>：讓模型塞得進小裝置的關鍵技術。</li>
+<li><a class="wl" href="#glossary">術語表</a>：看不懂的術語先查這裡。</li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S1、S2</li>
+</ul></section>
+<section id="p-cloud-vs-edge" data-page="cloud-vs-edge" hidden><p class="crumb">Edge AI Wiki</p><h1>雲端 AI vs 邊緣 AI</h1><blockquote>
+<p>雲端 AI 把運算放在遠端資料中心；邊緣 AI 把運算放在資料旁邊。兩者不是二選一，而是互補。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>雲端 AI 有較大的運算與儲存能力，適合訓練與部署更複雜的模型。<a class="tag" href="#raw-s1">S1</a></li>
+<li>邊緣 AI 適合需要即時反應的情境，例如自駕車要立刻偵測號誌、車道變換與行人。<a class="tag" href="#raw-s1">S1</a></li>
+<li>在車內本地處理，可以避免「把資料送到遠端伺服器」時的連線問題。<a class="tag" href="#raw-s1">S1</a></li>
+<li>把大量資料經廣域網路送到雲端，金錢成本與傳輸延遲都可能很高，也有隱私外洩疑慮。<a class="tag" href="#raw-s2">S2</a></li>
+<li>反過來，完全在裝置上跑可能效能與能源效率不佳，因為很多 AI 應用需要的運算量遠超過裝置能力。<a class="tag" href="#raw-s2">S2</a></li>
+<li>兩者互補的例子：顧客偏好資料送到雲端做分析，顧客當下的查詢在邊緣立即處理。<a class="tag" href="#raw-s1">S1</a></li>
+</ul>
+<h2>比較表<span class="tag syn" title="由多個來源整理，未含具體數字">整理</span></h2>
+<table>
+<thead>
+<tr>
+<th>面向</th>
+<th>雲端 AI</th>
+<th>邊緣 AI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>運算在哪</td>
+<td>遠端資料中心</td>
+<td>裝置或附近節點</td>
+</tr>
+<tr>
+<td>長處</td>
+<td>算力大、能訓練大模型</td>
+<td>快、省頻寬、資料不出門</td>
+</tr>
+<tr>
+<td>弱點</td>
+<td>延遲、頻寬、隱私</td>
+<td>運算、記憶體、電力有限</td>
+</tr>
+</tbody>
+</table>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#edge-ai">邊緣 AI（Edge AI）</a>：定義。</li>
+<li><a class="wl" href="#edge-intelligence-levels">邊緣智慧的六個等級</a>：介於純雲端與純裝置之間的各種組合。</li>
+<li><a class="wl" href="#inference-kpis">評估邊緣推論的六個指標</a>：比較時要看的指標。</li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S1、S2</li>
+</ul></section>
+<section id="p-training-vs-inference" data-page="training-vs-inference" hidden><p class="crumb">Edge AI Wiki</p><h1>訓練 vs 推論（Training vs Inference）</h1><blockquote>
+<p>訓練是「讓模型從大量資料中學會」；推論是「用學好的模型回答新問題」。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>訓練時，模型先用隨機的權重算出答案，用損失函數衡量錯多少，再透過反向傳播調整權重，重複到誤差夠小。<a class="tag" href="#raw-s2">S2</a></li>
+<li>推論只做前向傳遞：新的輸入一路經過網路，模型輸出預測。<a class="tag" href="#raw-s2">S2</a></li>
+<li>因為訓練比推論耗費多很多資源，常見做法是訓練放在雲端資料中心、推論放在邊緣。<a class="tag" href="#raw-s2">S2</a></li>
+<li>邊緣 AI 模型通常在資料中心或雲端訓練；部署後遇到問題，可以把資料送回雲端再訓練，再用新模型替換邊緣上的推論引擎。<a class="tag" href="#raw-s1">S1</a></li>
+<li>訓練也可以搬到邊緣：聯邦學習讓手機用自己的資料在本機訓練。<a class="tag" href="#raw-s6">S6</a></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#edge-intelligence-levels">邊緣智慧的六個等級</a>：依「訓練在哪、推論在哪」分級。</li>
+<li><a class="wl" href="#federated-learning">聯邦學習（Federated Learning）</a>：訓練在裝置上的代表技術。</li>
+<li><a class="wl" href="#edge-ai">邊緣 AI（Edge AI）</a></li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S1、S2、S6</li>
+</ul></section>
+<section id="p-edge-intelligence-levels" data-page="edge-intelligence-levels" hidden><p class="crumb">Edge AI Wiki</p><h1>邊緣智慧的六個等級</h1><blockquote>
+<p>依照「資料要送多遠、訓練與推論在哪裡做」把邊緣 AI 分成 0～6 級，等級越高，資料越不需要離開裝置。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>第 0 級「雲端智慧」：訓練與推論都在雲端。<a class="tag" href="#raw-s2">S2</a></li>
+<li>L1：雲端訓練；推論由邊緣與雲端合作（部分資料送上雲端）。<a class="tag" href="#raw-s2">S2</a></li>
+<li>L2：雲端訓練；推論在邊緣內完成（資料送到邊緣節點或附近裝置）。<a class="tag" href="#raw-s2">S2</a></li>
+<li>L3：雲端訓練；推論完全在裝置上，資料不外送。<a class="tag" href="#raw-s2">S2</a></li>
+<li>L4：訓練與推論都由雲端與邊緣合作。<a class="tag" href="#raw-s2">S2</a></li>
+<li>L5：訓練與推論都在邊緣內完成。<a class="tag" href="#raw-s2">S2</a></li>
+<li>L6：訓練與推論都在裝置上。<a class="tag" href="#raw-s2">S2</a></li>
+<li>等級越高，資料卸載量越少：傳輸延遲降低、隱私提高、廣域網路頻寬成本降低；代價是計算延遲與能耗增加。<a class="tag" href="#raw-s2">S2</a></li>
+<li>沒有通用的「最佳等級」，要依應用同時考慮延遲、能源效率、隱私與頻寬成本來選。<a class="tag" href="#raw-s2">S2</a></li>
+</ul>
+<h2>例子<span class="tag syn" title="由多個來源整理，未含具體數字">整理</span></h2>
+<ul>
+<li>手機上的相機場景辨識：通常是 L3（雲端訓練、裝置推論）。</li>
+<li>聯邦學習（Gboard）：訓練也在手機上，屬於高等級的協作訓練（參見 <a class="wl" href="#federated-learning">聯邦學習（Federated Learning）</a>）。</li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#training-vs-inference">訓練 vs 推論（Training vs Inference）</a>：分級的兩個軸。</li>
+<li><a class="wl" href="#cloud-vs-edge">雲端 AI vs 邊緣 AI</a>、<a class="wl" href="#inference-kpis">評估邊緣推論的六個指標</a></li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S2</li>
+</ul></section>
+<section id="p-model-compression" data-page="model-compression" hidden><p class="crumb">Edge AI Wiki</p><h1>模型壓縮（Model Compression）</h1><blockquote>
+<p>在盡量不降低準確率的前提下，把模型變小、變快、變省電，讓它能放進手機或微控制器。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>神經網路同時吃運算與記憶體，很難部署到硬體有限的嵌入式系統。<a class="tag" href="#raw-s3">S3</a></li>
+<li>常見手法：權重剪枝、資料量化、精簡架構設計。<a class="tag" href="#raw-s2">S2</a></li>
+<li>Deep Compression 三階段：剪枝 → 訓練量化（權重共享）→ 霍夫曼編碼，前兩步後再微調。<a class="tag" href="#raw-s3">S3</a></li>
+<li>三步合起來讓儲存需求減少 35～49 倍，準確率不變：AlexNet 從 240MB 變 6.9MB，VGG-16 從 552MB 變 11.3MB。<a class="tag" href="#raw-s3">S3</a></li>
+<li>壓縮後在 CPU、GPU、行動 GPU 上逐層加速 3～4 倍，能源效率提升 3～7 倍。<a class="tag" href="#raw-s3">S3</a></li>
+<li>注意：剪掉的權重數不等於省下的電，因為能耗主要來自卷積層，而權重多半在全連接層。<a class="tag" href="#raw-s2">S2</a></li>
+<li>模型壓縮改善的指標是延遲、能耗、隱私（能在本機推論）與記憶體占用。<a class="tag" href="#raw-s2">S2</a></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#pruning">剪枝（Pruning）</a>、<a class="wl" href="#quantization">量化（Quantization）</a>：兩個主要手法。</li>
+<li><a class="wl" href="#tinyml-mcunet">TinyML 與 MCUNet</a>：壓縮之外再加上「架構與推論引擎一起設計」。</li>
+<li><a class="wl" href="#edge-hardware">邊緣 AI 的硬體與元件</a>、<a class="wl" href="#inference-kpis">評估邊緣推論的六個指標</a></li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S2、S3</li>
+</ul></section>
+<section id="p-pruning" data-page="pruning" hidden><p class="crumb">Edge AI Wiki</p><h1>剪枝（Pruning）</h1><blockquote>
+<p>把神經網路裡「不太重要」的連線刪掉，就像修剪樹枝，留下的網路更小。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>做法：只學習重要的連線，把不重要的刪掉，再重新訓練剩下的連線。<a class="tag" href="#raw-s3">S3</a></li>
+<li>早期做法是刪掉數值小於門檻的權重，再微調恢復準確率。<a class="tag" href="#raw-s2">S2</a></li>
+<li>在 AlexNet 與 VGG-16 上，剪枝讓連線數減少 9～13 倍，準確率沒有下降。<a class="tag" href="#raw-s3">S3</a></li>
+<li>剪枝只減少權重數量；省不省電還要看是哪一層被剪。<a class="tag" href="#raw-s2">S2</a></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#model-compression">模型壓縮（Model Compression）</a>、<a class="wl" href="#quantization">量化（Quantization）</a></li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S2、S3</li>
+</ul></section>
+<section id="p-quantization" data-page="quantization" hidden><p class="crumb">Edge AI Wiki</p><h1>量化（Quantization）</h1><blockquote>
+<p>把模型裡的數字從「很精細的 32 位元小數」改成「比較粗的整數或 16 位元」，模型就變小、算得更快。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>模型參數預設是 32 位元浮點數，量化就是降低這些數字的精度。<a class="tag" href="#raw-s4">S4</a></li>
+<li>用較少的位元表示數字，可以降低記憶體占用並加速運算。<a class="tag" href="#raw-s2">S2</a></li>
+<li>Deep Compression 的作法是「權重共享」：用 k-means 把權重分群，同群共用一個值；每條連線從 32 位元降到 5 位元。<a class="tag" href="#raw-s3">S3</a></li>
+<li>訓練後量化（post-training quantization）：拿訓練好的浮點模型，在轉檔時直接量化，不必重新訓練。<a class="tag" href="#raw-s4">S4</a></li>
+</ul>
+<h2>LiteRT 的三種訓練後量化<a class="tag" href="#raw-s4">S4</a></h2>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>模型大小</th>
+<th>速度</th>
+<th>適用硬體</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>動態範圍量化</td>
+<td>約小 4 倍</td>
+<td>加速 2～3 倍</td>
+<td>CPU</td>
+</tr>
+<tr>
+<td>完整整數量化</td>
+<td>約小 4 倍</td>
+<td>加速 3 倍以上</td>
+<td>CPU、Edge TPU、微控制器</td>
+</tr>
+<tr>
+<td>float16 量化</td>
+<td>約小 2 倍</td>
+<td>可用 GPU 加速</td>
+<td>CPU、GPU</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>完整整數量化需要「代表性資料集」來估計數值範圍，大約 100～500 筆即可。<a class="tag" href="#raw-s4">S4</a></li>
+<li>微控制器與 Edge TPU 常需要純整數模型。<a class="tag" href="#raw-s4">S4</a></li>
+<li>量化可能讓準確率下降，量化後一定要檢查；掉太多就改用量化感知訓練。<a class="tag" href="#raw-s4">S4</a></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#model-compression">模型壓縮（Model Compression）</a>、<a class="wl" href="#pruning">剪枝（Pruning）</a>、<a class="wl" href="#edge-hardware">邊緣 AI 的硬體與元件</a></li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S2、S3、S4</li>
+</ul></section>
+<section id="p-tinyml-mcunet" data-page="tinyml-mcunet" hidden><p class="crumb">Edge AI Wiki</p><h1>TinyML 與 MCUNet</h1><blockquote>
+<p>TinyML 是把機器學習放進便宜、省電、記憶體極小的微控制器；MCUNet 是讓微控制器也能做影像辨識的代表研究。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>微控制器的記憶體比手機小 2～3 個數量級，在上面跑深度學習很困難。<a class="tag" href="#raw-s5">S5</a></li>
+<li>晶片上記憶體比雲端 GPU 小 5～6 個數量級。<a class="tag" href="#raw-s5">S5</a></li>
+<li>SRAM 限制激活值，Flash 限制模型大小，所以「模型小」還不夠，運算中途的資料也要小。<a class="tag" href="#raw-s5">S5</a></li>
+<li>MCUNet 同時設計 TinyNAS（在記憶體限制下自動找網路架構）和 TinyEngine（省記憶體的推論函式庫）。<a class="tag" href="#raw-s5">S5</a></li>
+<li>成果：第一個在市售微控制器上達到 ImageNet top-1 準確率超過 70% 的方法。<a class="tag" href="#raw-s5">S5</a></li>
+<li>語音喚醒詞任務達到 91% 準確率、每秒 10 次推論。<a class="tag" href="#raw-s5">S5</a></li>
+<li>TinyEngine 比 TF-Lite Micro 與 CMSIS-NN 推論快 1.7～3.3 倍。<a class="tag" href="#raw-s5">S5</a></li>
+<li>⚠️ 衝突：記憶體節省倍數，摘要頁（v2）寫 4.8 倍，PDF 內文寫峰值記憶體 3.4 倍；可能是版本差異。簡報不使用此數字。<a class="tag" href="#raw-s5">S5</a></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#edge-hardware">邊緣 AI 的硬體與元件</a>：SRAM 與 Flash。</li>
+<li><a class="wl" href="#model-compression">模型壓縮（Model Compression）</a>：MCUNet 是壓縮之外的另一條路。</li>
+<li><a class="wl" href="#quantization">量化（Quantization）</a>：MCU 通常需要整數模型。</li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S5</li>
+</ul></section>
+<section id="p-federated-learning" data-page="federated-learning" hidden><p class="crumb">Edge AI Wiki</p><h1>聯邦學習（Federated Learning）</h1><blockquote>
+<p>大家一起訓練同一個模型，但每個人的資料都不離開自己的手機，只上傳「學到了什麼」。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>傳統做法要把訓練資料集中到資料中心；聯邦學習讓訓練資料留在手機上。<a class="tag" href="#raw-s6">S6</a></li>
+<li>流程：下載目前模型 → 用手機上的資料改進 → 整理成小更新 → 加密上傳 → 伺服器把很多人的更新平均 → 重複。<a class="tag" href="#raw-s6">S6</a></li>
+<li>個別手機的更新不會存在雲端。<a class="tag" href="#raw-s6">S6</a></li>
+<li>實例：Google 在 Android 鍵盤 Gboard 測試，用「建議字有沒有被點」的本機紀錄改進下一版模型。<a class="tag" href="#raw-s6">S6</a></li>
+<li>Federated Averaging 演算法比天真的做法少 10～100 倍通訊量。<a class="tag" href="#raw-s6">S6</a></li>
+<li>只在手機閒置、充電中、連免費 Wi-Fi 時才訓練。<a class="tag" href="#raw-s6">S6</a></li>
+<li>Secure Aggregation：伺服器只有在數百到數千台手機參與時，才能解開平均後的更新。<a class="tag" href="#raw-s6">S6</a></li>
+<li>限制：需要人工仔細標註的任務（例如辨識狗的品種）不適合。<a class="tag" href="#raw-s6">S6</a></li>
+<li>學術上，聯邦學習被歸為「保護隱私的邊緣訓練技術」。<a class="tag" href="#raw-s2">S2</a></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#training-vs-inference">訓練 vs 推論（Training vs Inference）</a>：把「訓練」也搬到邊緣。</li>
+<li><a class="wl" href="#edge-intelligence-levels">邊緣智慧的六個等級</a>：屬於訓練也在邊緣的高等級。</li>
+<li><a class="wl" href="#misconceptions">常見誤解</a></li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S2、S6</li>
+</ul></section>
+<section id="p-edge-hardware" data-page="edge-hardware" hidden><p class="crumb">Edge AI Wiki</p><h1>邊緣 AI 的硬體與元件</h1><blockquote>
+<p>一套邊緣 AI 系統由「收資料的裝置、中間的閘道與伺服器、做運算的晶片、以及模型」組成。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>邊緣裝置／節點：收集資料的工業 IoT 機台、感測器、智慧攝影機。<a class="tag" href="#raw-s1">S1</a></li>
+<li>邊緣閘道：位於邊緣裝置和雲端之間的路由器、伺服器等網路設備。<a class="tag" href="#raw-s1">S1</a></li>
+<li>邊緣伺服器：放在邊緣、負責運算、儲存與網路的專用電腦或電腦叢集。<a class="tag" href="#raw-s1">S1</a></li>
+<li>邊緣處理器與 AI 加速器：例如 NPU（神經處理單元）與 GPU，用平行運算以較低功耗完成推論。<a class="tag" href="#raw-s1">S1</a></li>
+<li>邊緣節點大小差很多，從信用卡大小的電腦到有數個機櫃的微型資料中心；共同點是「靠近資料來源」。<a class="tag" href="#raw-s2">S2</a></li>
+<li>微控制器（MCU）的記憶體比手機小 2～3 個數量級。<a class="tag" href="#raw-s5">S5</a></li>
+<li>在 MCU 上，SRAM（可讀寫）限制運算中途的激活值大小，Flash（唯讀）限制模型大小。<a class="tag" href="#raw-s5">S5</a></li>
+<li>模型夠小時可以整個放進晶片上的 SRAM，避免讀取較耗能的晶片外 DRAM。<a class="tag" href="#raw-s3">S3</a></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#tinyml-mcunet">TinyML 與 MCUNet</a>：MCU 等級的極限案例。</li>
+<li><a class="wl" href="#model-compression">模型壓縮（Model Compression）</a>：讓模型塞進這些硬體。</li>
+<li><a class="wl" href="#edge-ai">邊緣 AI（Edge AI）</a></li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S1、S2、S3、S5</li>
+</ul></section>
+<section id="p-inference-kpis" data-page="inference-kpis" hidden><p class="crumb">Edge AI Wiki</p><h1>評估邊緣推論的六個指標</h1><blockquote>
+<p>判斷一個邊緣 AI 系統好不好，不只看準不準，還要看快不快、耗不耗電、會不會洩漏資料。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>延遲：整個推論過程花的時間，包括前處理、模型運算、資料傳輸與後處理。<a class="tag" href="#raw-s2">S2</a></li>
+<li>AR/VR 行動遊戲、智慧機器人等即時應用，常要求約 100 毫秒的延遲。<a class="tag" href="#raw-s2">S2</a></li>
+<li>準確率：預測正確的樣本比例；自駕車、人臉驗證需要極高準確率。<a class="tag" href="#raw-s2">S2</a></li>
+<li>能耗：端裝置多半靠電池，運算與通訊都會耗電。<a class="tag" href="#raw-s2">S2</a></li>
+<li>隱私：資料越靠近來源處理越容易保護。<a class="tag" href="#raw-s2">S2</a></li>
+<li>通訊負擔：除了純裝置推論外，其他模式都受網路頻寬影響。<a class="tag" href="#raw-s2">S2</a></li>
+<li>記憶體占用：手機沒有雲端 GPU 那種專用高頻寬記憶體，模型參數很吃記憶體。<a class="tag" href="#raw-s2">S2</a></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#cloud-vs-edge">雲端 AI vs 邊緣 AI</a>、<a class="wl" href="#model-compression">模型壓縮（Model Compression）</a>、<a class="wl" href="#edge-intelligence-levels">邊緣智慧的六個等級</a></li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S2</li>
+</ul></section>
+<section id="p-use-cases" data-page="use-cases" hidden><p class="crumb">Edge AI Wiki</p><h1>邊緣 AI 的應用例子</h1><blockquote>
+<p>只要「要快」「資料敏感」或「網路不穩」，就是邊緣 AI 的主場。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>醫療：穿戴裝置在本機分析心率、血壓等數值，並在使用者突然跌倒時通知照護者。<a class="tag" href="#raw-s1">S1</a></li>
+<li>製造：用感測器資料偵測異常、預測機台故障（預測性維護），在停機前安排維修。<a class="tag" href="#raw-s1">S1</a></li>
+<li>零售：智慧購物車與自動結帳即時辨識商品。<a class="tag" href="#raw-s1">S1</a></li>
+<li>智慧家庭：門鈴在本機辨識訪客，資料不必傳到遠端伺服器，較能保護隱私。<a class="tag" href="#raw-s1">S1</a></li>
+<li>安全監控：攝影機在本機偵測可疑活動並立即警報，避免上傳雲端造成的延遲。<a class="tag" href="#raw-s1">S1</a></li>
+<li>交通：自駕車在車內即時處理號誌與行人資訊。<a class="tag" href="#raw-s1">S1</a></li>
+<li>輸入法：Gboard 用聯邦學習改進建議字。<a class="tag" href="#raw-s6">S6</a></li>
+<li>語音喚醒詞：微控制器上的關鍵字偵測。<a class="tag" href="#raw-s5">S5</a></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#edge-ai">邊緣 AI（Edge AI）</a>、<a class="wl" href="#federated-learning">聯邦學習（Federated Learning）</a>、<a class="wl" href="#tinyml-mcunet">TinyML 與 MCUNet</a></li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S1、S5、S6</li>
+</ul></section>
+<section id="p-misconceptions" data-page="misconceptions" hidden><p class="crumb">Edge AI Wiki</p><h1>常見誤解</h1><blockquote>
+<p>新手最容易誤會的五件事，以及正確說法。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>誤解「邊緣 AI 就是不用雲端」→ 正確：雲端與邊緣互補，雲端仍常負責訓練與大量分析。<a class="tag" href="#raw-s1">S1</a></li>
+<li>誤解「邊緣 AI 只能做推論」→ 正確：聯邦學習讓手機也能參與訓練。<a class="tag" href="#raw-s6">S6</a></li>
+<li>誤解「模型越大越好，放不下就買更好的晶片」→ 正確：壓縮後的模型儲存可減少 35～49 倍且準確率不變。<a class="tag" href="#raw-s3">S3</a></li>
+<li>誤解「剪掉越多權重就越省電」→ 正確：省電程度要看被剪的是哪一層。<a class="tag" href="#raw-s2">S2</a></li>
+<li>誤解「量化一定會讓模型變很不準」→ 正確：官方文件指出訓練後量化通常只有小幅準確率損失，但量化後仍要實際檢查。<a class="tag" href="#raw-s4">S4</a></li>
+<li>誤解「等級越高（越靠近裝置）越好」→ 正確：沒有通用最佳等級，要看應用。<a class="tag" href="#raw-s2">S2</a></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#cloud-vs-edge">雲端 AI vs 邊緣 AI</a>、<a class="wl" href="#federated-learning">聯邦學習（Federated Learning）</a>、<a class="wl" href="#model-compression">模型壓縮（Model Compression）</a>、<a class="wl" href="#pruning">剪枝（Pruning）</a>、<a class="wl" href="#quantization">量化（Quantization）</a>、<a class="wl" href="#edge-intelligence-levels">邊緣智慧的六個等級</a></li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S1、S2、S3、S4、S6</li>
+</ul></section>
+<section id="p-glossary" data-page="glossary" hidden><p class="crumb">Edge AI Wiki</p><h1>術語表</h1><blockquote>
+<p>簡報與 wiki 中出現的術語，一句話解釋。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li><strong>邊緣運算（Edge computing）</strong>：把運算從網路核心搬到靠近資料來源的地方。<a class="tag" href="#raw-s2">S2</a></li>
+<li><strong>雲端 AI（Cloud AI）</strong>：把模型部署在遠端雲端伺服器上執行。<a class="tag" href="#raw-s1">S1</a></li>
+<li><strong>推論（Inference）</strong>：用訓練好的模型對新輸入做預測，只有前向傳遞。<a class="tag" href="#raw-s2">S2</a></li>
+<li><strong>訓練（Training）</strong>：用資料調整模型權重，包含前向傳遞與反向傳播。<a class="tag" href="#raw-s2">S2</a></li>
+<li><strong>延遲（Latency）</strong>：從輸入到得到結果花的時間。<a class="tag" href="#raw-s2">S2</a></li>
+<li><strong>IoT（物聯網）</strong>：連上網路的感測器、家電等裝置。<a class="tag" href="#raw-s1">S1</a></li>
+<li><strong>NPU（神經處理單元）</strong>：專門加速神經網路運算的晶片。<a class="tag" href="#raw-s1">S1</a></li>
+<li><strong>微控制器（MCU）</strong>：便宜、省電、記憶體很小的單晶片電腦，常見於家電與感測器。<a class="tag" href="#raw-s5">S5</a></li>
+<li><strong>SRAM</strong>：晶片上的高速可讀寫記憶體，限制運算中途資料的大小。<a class="tag" href="#raw-s5">S5</a></li>
+<li><strong>Flash</strong>：存放程式與模型的唯讀（非揮發）記憶體。<a class="tag" href="#raw-s5">S5</a></li>
+<li><strong>剪枝（Pruning）</strong>：刪掉不重要的連線讓模型變小。<a class="tag" href="#raw-s3">S3</a></li>
+<li><strong>量化（Quantization）</strong>：降低模型數字的位元數。<a class="tag" href="#raw-s4">S4</a></li>
+<li><strong>權重（Weight）</strong>：神經網路中每條連線的數值，訓練就是在調它。<a class="tag" href="#raw-s2">S2</a></li>
+<li><strong>TinyML</strong>：在微控制器等極小裝置上做機器學習。<a class="tag" href="#raw-s5">S5</a></li>
+<li><strong>聯邦學習（Federated Learning）</strong>：資料留在各自裝置、只上傳模型更新的協作訓練。<a class="tag" href="#raw-s6">S6</a></li>
+<li><strong>TinyNAS</strong>：MCUNet 中在記憶體限制下自動搜尋網路架構的方法。<a class="tag" href="#raw-s5">S5</a></li>
+<li>
+<p><strong>TinyEngine</strong>：MCUNet 中省記憶體的推論函式庫。<a class="tag" href="#raw-s5">S5</a></p>
+</li>
+<li>
+<p><strong>前向傳遞（Forward pass）</strong>：輸入資料一層一層經過網路算出輸出；推論只做這一步。<a class="tag" href="#raw-s2">S2</a></p>
+</li>
+<li><strong>反向傳播（Backpropagation）</strong>：把誤差從輸出層往回傳，算出每個權重該怎麼調整。<a class="tag" href="#raw-s2">S2</a></li>
+<li><strong>損失函數（Loss function）</strong>：衡量模型答案和正確答案差多少的公式。<a class="tag" href="#raw-s2">S2</a></li>
+<li><strong>激活值（Activation）</strong>：運算中途每一層算出來、要暫存讀寫的資料。<a class="tag" href="#raw-s5">S5</a></li>
+<li><strong>卷積層（Convolution layer）</strong>：神經網路的一種層，擅長抓影像的局部特徵。<span class="tag syn" title="由多個來源整理，未含具體數字">整理</span></li>
+<li><strong>全連接層（Fully-connected layer）</strong>：把所有輸入都連到所有輸出的層，權重數量通常最多。<span class="tag syn" title="由多個來源整理，未含具體數字">整理</span></li>
+<li><strong>卸載（Offloading）</strong>：把資料或運算交給別的裝置（邊緣節點或雲端）去做。<a class="tag" href="#raw-s2">S2</a></li>
+<li><strong>浮點數（Floating point）</strong>：電腦表示小數的方式；模型參數預設用 32 位元浮點數。<a class="tag" href="#raw-s4">S4</a></li>
+<li><strong>權重共享（Weight sharing）</strong>：把相近的權重分成一群，同群共用一個值，只存代表值和索引。<a class="tag" href="#raw-s3">S3</a></li>
+<li><strong>k-means</strong>：把資料分成 k 群的分群演算法，Deep Compression 用它找出要共享的權重值。<a class="tag" href="#raw-s3">S3</a></li>
+<li><strong>霍夫曼編碼（Huffman coding）</strong>：一種無失真壓縮，出現越多次的值用越短的編碼。<span class="tag syn" title="由多個來源整理，未含具體數字">整理</span></li>
+<li><strong>代表性資料集（Representative dataset）</strong>：做完整整數量化時，用來估計數值範圍的一小批資料。<a class="tag" href="#raw-s4">S4</a></li>
+<li><strong>量化感知訓練（Quantization-aware training）</strong>：在訓練時就模擬量化的誤差，讓模型適應低精度；比訓練後量化麻煩但準確率較好。<span class="tag syn" title="由多個來源整理，未含具體數字">整理</span></li>
+<li><strong>GPU</strong>：擅長平行運算的處理器，常用來加速 AI。<a class="tag" href="#raw-s1">S1</a></li>
+<li><strong>Edge TPU</strong>：Google 推出、專給邊緣裝置做 AI 推論的加速晶片。<span class="tag syn" title="由多個來源整理，未含具體數字">整理</span></li>
+<li><strong>DRAM</strong>：晶片外的主記憶體，容量大但讀取比晶片上 SRAM 更耗能。<a class="tag" href="#raw-s3">S3</a></li>
+<li><strong>ImageNet</strong>：大型影像辨識資料集，常用來比較模型準確率。<span class="tag syn" title="由多個來源整理，未含具體數字">整理</span></li>
+<li><strong>top-1 準確率</strong>：模型「第一個猜的答案」就是正確答案的比例。<span class="tag syn" title="由多個來源整理，未含具體數字">整理</span></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#sources">來源清單</a>：每個定義後面的 S 編號對照</li>
+<li><a class="wl" href="#edge-ai">邊緣 AI（Edge AI）</a>、<a class="wl" href="#training-vs-inference">訓練 vs 推論（Training vs Inference）</a>、<a class="wl" href="#edge-hardware">邊緣 AI 的硬體與元件</a>、<a class="wl" href="#pruning">剪枝（Pruning）</a>、<a class="wl" href="#quantization">量化（Quantization）</a>、<a class="wl" href="#tinyml-mcunet">TinyML 與 MCUNet</a>、<a class="wl" href="#federated-learning">聯邦學習（Federated Learning）</a></li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S1、S2、S3、S4、S5、S6</li>
+</ul></section>
+<section id="p-sources" data-page="sources" hidden><p class="crumb">Edge AI Wiki</p><h1>來源清單</h1><blockquote>
+<p>本 wiki 的 6 篇原始來源（原始筆記在 raw/）。</p>
+</blockquote>
+<h2>重點</h2>
+<ul>
+<li>S1：Susnjara &amp; Smalley，〈What is edge AI?〉，IBM Think，2023（2026-04-02 更新）。<a href="https://www.ibm.com/think/topics/edge-ai" target="_blank" rel="noopener">https://www.ibm.com/think/topics/edge-ai</a> <a class="tag" href="#raw-s1">S1</a></li>
+<li>S2：Zhou et al.，〈Edge Intelligence: Paving the Last Mile of AI with Edge Computing〉，Proceedings of the IEEE，2019。<a href="https://arxiv.org/abs/1905.10083" target="_blank" rel="noopener">https://arxiv.org/abs/1905.10083</a> <a class="tag" href="#raw-s2">S2</a></li>
+<li>S3：Han, Mao, Dally，〈Deep Compression〉，ICLR 2016。<a href="https://arxiv.org/abs/1510.00149" target="_blank" rel="noopener">https://arxiv.org/abs/1510.00149</a> <a class="tag" href="#raw-s3">S3</a></li>
+<li>S4：Google AI Edge，〈Post-training quantization〉，LiteRT 官方文件。<a href="https://developers.google.com/edge/litert/models/post_training_quantization" target="_blank" rel="noopener">https://developers.google.com/edge/litert/models/post_training_quantization</a> <a class="tag" href="#raw-s4">S4</a></li>
+<li>S5：Lin et al.，〈MCUNet: Tiny Deep Learning on IoT Devices〉，NeurIPS 2020。<a href="https://arxiv.org/abs/2007.10319" target="_blank" rel="noopener">https://arxiv.org/abs/2007.10319</a> <a class="tag" href="#raw-s5">S5</a></li>
+<li>S6：McMahan &amp; Ramage，〈Federated Learning〉，Google Research Blog，2017。<a href="https://research.google/blog/federated-learning-collaborative-machine-learning-without-centralized-training-data/" target="_blank" rel="noopener">https://research.google/blog/federated-learning-collaborative-machine-learning-without-centralized-training-data/</a> <a class="tag" href="#raw-s6">S6</a></li>
+</ul>
+<h2>和其他概念的關係</h2>
+<ul>
+<li><a class="wl" href="#edge-ai">邊緣 AI（Edge AI）</a>（所有頁面的事實句都以 S1～S6 標記）</li>
+</ul>
+<h2>來源</h2>
+<ul>
+<li>S1～S6</li>
+</ul></section>
+<section id="p-raw-s1" data-page="raw-s1" hidden><p class="crumb">原始來源</p><h1>S1　What is edge AI?</h1><ul>
+<li>作者／單位：Stephanie Susnjara、Ian Smalley（IBM Think）</li>
+<li>發布：2023-08-25；更新：2026-04-02</li>
+<li>URL：<a href="https://www.ibm.com/think/topics/edge-ai" target="_blank" rel="noopener">https://www.ibm.com/think/topics/edge-ai</a></li>
+<li>讀取日期：2026-11-10</li>
+<li>類型：企業教學文章</li>
+</ul>
+<h2>摘錄重點（自己的話）</h2>
+<ol>
+<li>邊緣 AI 是把 AI 模型直接放在本地的邊緣裝置（感測器、IoT 裝置）上執行，不必一直靠雲端就能即時處理資料；等於邊緣運算加上 AI。</li>
+<li>有沒有網路都能處理，資料可在毫秒等級內得到回應。</li>
+<li>模型通常在資料中心或雲端訓練；部署後若遇到問題，可把資料送回雲端再訓練，用新模型替換邊緣上的推論引擎。</li>
+<li>小型語言模型（SLM）讓更多處理可以留在裝置上。</li>
+<li>主要元件：邊緣裝置／節點、邊緣閘道、邊緣伺服器、邊緣處理器與 AI 加速器（NPU、GPU）、機器學習模型。</li>
+<li>雲端 AI 有較大的運算與儲存能力，適合訓練與部署更複雜的模型；兩者互補，例如顧客偏好資料送雲端分析，當下的查詢在邊緣處理。</li>
+<li>需要即時反應的情境（例：自駕車要即時偵測號誌、行人）適合邊緣；本地處理也降低連線出問題的風險。</li>
+<li>好處：低延遲、省頻寬、即時分析、隱私與資料主權、自動化、斷網仍能運作（韌性）、可擴展、降成本、較省能。</li>
+<li>用例：穿戴裝置監測心率並偵測跌倒、工廠預測性維護、零售自動結帳、智慧門鈴辨識訪客、安全監控即時警報。</li>
+</ol>
+<h2>不採用</h2>
+<ul>
+<li>市場規模預測與高階主管調查數字：與教學目標無關，且會過時。</li>
+</ul></section>
+<section id="p-raw-s2" data-page="raw-s2" hidden><p class="crumb">原始來源</p><h1>S2　Edge Intelligence: Paving the Last Mile of Artificial Intelligence with Edge Computing</h1><ul>
+<li>作者：Zhi Zhou, Xu Chen, En Li, Liekang Zeng, Ke Luo, Junshan Zhang</li>
+<li>發表：Proceedings of the IEEE, 2019（arXiv:1905.10083, 2019-05-24）</li>
+<li>URL：<a href="https://arxiv.org/abs/1905.10083" target="_blank" rel="noopener">https://arxiv.org/abs/1905.10083</a></li>
+<li>讀取日期：2026-11-10（讀了 PDF 前約 70%：第 I–V 節）</li>
+<li>類型：綜述論文</li>
+</ul>
+<h2>摘錄重點（自己的話）</h2>
+<ol>
+<li>資料產生地點從雲端資料中心轉向手機與 IoT 裝置。全部傳回雲端會有費用高、傳輸延遲長、隱私外洩的問題；全部在裝置上跑又受限於裝置運算與電力。</li>
+<li>邊緣運算把運算從網路核心推到靠近資料來源的地方；邊緣節點可以小到信用卡大小的電腦，也可以大到有好幾個機櫃的微型資料中心，關鍵特徵是「靠近資料來源」。</li>
+<li>作者主張邊緣智慧不只是「在裝置上跑 AI」，而是善用端裝置、邊緣節點、雲端三層的資源，訓練與推論都可以協作。</li>
+<li>六級評等（加上第 0 級「雲端智慧」）：L1 雲邊協同推論＋雲端訓練；L2 邊緣內推論＋雲端訓練；L3 裝置上推論＋雲端訓練；L4 雲邊協同訓練與推論；L5 訓練與推論都在邊緣；L6 訓練與推論都在裝置上。</li>
+<li>等級越高：資料卸載越少 → 傳輸延遲降低、隱私提高、廣域網路頻寬成本下降；代價是計算延遲與能耗上升。沒有通用的最佳等級，要看應用。</li>
+<li>訓練包含前向傳遞與反向傳播；推論只有前向傳遞（輸入一路經過網路得到預測）。</li>
+<li>邊緣推論的六個指標：延遲、準確率、能耗、隱私、通訊負擔、記憶體占用。</li>
+<li>即時應用（AR/VR 行動遊戲、智慧機器人）常有約 100 毫秒的延遲要求。</li>
+<li>推論加速技術：模型壓縮（剪枝、量化、精簡架構）、模型切分、提早退出（early exit）、邊緣快取、輸入過濾、模型選擇、多工排程、應用特化最佳化。</li>
+<li>剪枝要注意：權重數量減少不一定等於省電，因為能耗主要在卷積層，而權重大多在全連接層。</li>
+<li>訓練面的代表技術是聯邦學習：原始資料留在用戶端，伺服器彙整各端算出的更新。</li>
+</ol>
+<h2>不採用／標記</h2>
+<ul>
+<li>⏳ 舊資料：Cisco 預估 2021 年邊緣會產生約 850 ZB 資料（2019 年的預測，已過期，不進簡報）。</li>
+<li>⏳ Gartner 2018 年對邊緣 AI 成熟時程的預測：已過期。</li>
+</ul></section>
+<section id="p-raw-s3" data-page="raw-s3" hidden><p class="crumb">原始來源</p><h1>S3　Deep Compression: Compressing Deep Neural Networks with Pruning, Trained Quantization and Huffman Coding</h1><ul>
+<li>作者：Song Han, Huizi Mao, William J. Dally</li>
+<li>發表：ICLR 2016（arXiv:1510.00149）</li>
+<li>URL：<a href="https://arxiv.org/abs/1510.00149" target="_blank" rel="noopener">https://arxiv.org/abs/1510.00149</a></li>
+<li>讀取日期：2026-11-10（讀 arXiv 摘要頁與 PDF 前段）</li>
+<li>類型：經典論文</li>
+</ul>
+<h2>摘錄重點（自己的話）</h2>
+<ol>
+<li>神經網路又吃運算又吃記憶體，很難放進硬體資源有限的嵌入式系統。</li>
+<li>三階段壓縮：剪枝（只留重要的連線）→ 訓練量化（權重共享）→ 霍夫曼編碼；前兩步之後再重新訓練微調。</li>
+<li>剪枝讓連線數減少 9～13 倍；量化讓每條連線從 32 位元降到 5 位元。</li>
+<li>在 ImageNet 上，AlexNet 從 240MB 壓到 6.9MB（35 倍），VGG-16 從 552MB 壓到 11.3MB（49 倍），準確率沒有下降。</li>
+<li>壓縮後模型可以放進晶片上的 SRAM，不必去讀晶片外、較耗能的 DRAM；行動裝置的能耗主要由記憶體存取決定。</li>
+<li>在 CPU、GPU、行動 GPU 上，壓縮後的網路逐層加速 3～4 倍、能源效率提升 3～7 倍。</li>
+<li>權重共享用 k-means 分群：同一群的權重共用一個值，只需存「代表值表」和索引。</li>
+<li>動機之一：App 商店對大檔案有下載限制，模型太大就很難放進手機 App。</li>
+</ol></section>
+<section id="p-raw-s4" data-page="raw-s4" hidden><p class="crumb">原始來源</p><h1>S4　Post-training quantization（LiteRT 官方文件）</h1><ul>
+<li>單位：Google AI Edge（LiteRT，前身 TensorFlow Lite）</li>
+<li>URL：<a href="https://developers.google.com/edge/litert/models/post_training_quantization" target="_blank" rel="noopener">https://developers.google.com/edge/litert/models/post_training_quantization</a></li>
+<li>補充頁：<a href="https://ai.google.dev/edge/lite/models/model_optimization（Model" target="_blank" rel="noopener">https://ai.google.dev/edge/lite/models/model_optimization（Model</a> optimization）</li>
+<li>讀取日期：2026-11-10</li>
+<li>類型：官方文件</li>
+</ul>
+<h2>摘錄重點（自己的話）</h2>
+<ol>
+<li>量化是降低模型參數的數字精度；參數預設是 32 位元浮點數，量化後模型變小、計算變快。</li>
+<li>訓練後量化（post-training quantization）：拿已經訓練好的浮點模型，在轉換成 LiteRT 格式時直接量化，不必重新訓練。</li>
+<li>三種常見方法：</li>
+<li>動態範圍量化：約小 4 倍、加速 2～3 倍，適用 CPU。</li>
+<li>完整整數量化：約小 4 倍、加速 3 倍以上，適用 CPU、Edge TPU、微控制器。</li>
+<li>float16 量化：約小 2 倍，可用 GPU 加速。</li>
+<li>完整整數量化需要「代表性資料集」來估計數值範圍，大約 100～500 筆訓練或驗證資料即可。</li>
+<li>微控制器與 Coral Edge TPU 常需要純整數模型。</li>
+<li>量化可能讓準確率下降（小網路尤其明顯），量化後要檢查準確率；掉太多時改用量化感知訓練（quantization-aware training）。</li>
+<li>模型變小的好處：下載更快、占用記憶體更少；延遲降低也連帶降低耗電。</li>
+</ol></section>
+<section id="p-raw-s5" data-page="raw-s5" hidden><p class="crumb">原始來源</p><h1>S5　MCUNet: Tiny Deep Learning on IoT Devices</h1><ul>
+<li>作者：Ji Lin, Wei-Ming Chen, Yujun Lin, John Cohn, Chuang Gan, Song Han</li>
+<li>發表：NeurIPS 2020（arXiv:2007.10319）</li>
+<li>URL：<a href="https://arxiv.org/abs/2007.10319" target="_blank" rel="noopener">https://arxiv.org/abs/2007.10319</a></li>
+<li>讀取日期：2026-11-10（讀 arXiv 摘要頁 v2、NeurIPS 摘要頁、PDF 引言）</li>
+<li>類型：論文</li>
+</ul>
+<h2>摘錄重點（自己的話）</h2>
+<ol>
+<li>在微控制器（MCU）上做機器學習很吸引人但很難：MCU 的記憶體比手機小 2～3 個數量級。</li>
+<li>引言補充：晶片上記憶體比雲端 GPU 小 5～6 個數量級。</li>
+<li>SRAM 限制「激活值」（運算中途要讀寫的資料）大小；Flash 限制「模型」大小（唯讀）。</li>
+<li>MCUNet 同時設計兩件事：TinyNAS（在記憶體限制下自動搜尋網路架構）＋ TinyEngine（省記憶體的推論函式庫）。這叫「系統與演算法共同設計」。</li>
+<li>成果：第一個在市售微控制器上達到 ImageNet top-1 準確率超過 70% 的方法；在語音喚醒詞任務（Speech Commands）達到 91% top-1 準確率、每秒 10 次推論。</li>
+<li>TinyEngine 與 TF-Lite Micro、CMSIS-NN 相比，推論快 1.7～3.3 倍。</li>
+<li>記憶體節省倍數：arXiv 摘要頁（v2）寫「記憶體用量少 4.8 倍」；PDF 內文寫「峰值記憶體少 3.4 倍」。⚠️ 兩處數字不同。</li>
+<li>作者認為「隨時待命的微型機器學習（TinyML）」時代已經來臨。</li>
+</ol></section>
+<section id="p-raw-s6" data-page="raw-s6" hidden><p class="crumb">原始來源</p><h1>S6　Federated Learning: Collaborative Machine Learning without Centralized Training Data</h1><ul>
+<li>作者：Brendan McMahan、Daniel Ramage（Google Research）</li>
+<li>發布：2017-04-06</li>
+<li>URL：<a href="https://research.google/blog/federated-learning-collaborative-machine-learning-without-centralized-training-data/" target="_blank" rel="noopener">https://research.google/blog/federated-learning-collaborative-machine-learning-without-centralized-training-data/</a></li>
+<li>讀取日期：2026-11-10</li>
+<li>類型：官方研究部落格</li>
+</ul>
+<h2>摘錄重點（自己的話）</h2>
+<ol>
+<li>傳統機器學習要把訓練資料集中到一台機器或資料中心；聯邦學習讓很多手機一起學一個共享模型，但訓練資料留在各自手機上。</li>
+<li>流程：手機下載目前模型 → 用手機上的資料改進 → 把改變整理成一個小的更新 → 加密上傳 → 伺服器把大家的更新平均起來改進共享模型 → 重複。</li>
+<li>個別更新不會存在雲端。</li>
+<li>實例：Google 在 Android 鍵盤 Gboard 測試，用手機上「建議有沒有被點」的紀錄改進下一版建議模型。</li>
+<li>Federated Averaging 演算法：用手機較強的處理器算出品質更好的更新，比天真版本少 10～100 倍通訊量。</li>
+<li>只在手機閒置、充電中、連免費 Wi-Fi 時才訓練，不影響使用。</li>
+<li>Secure Aggregation：伺服器只有在數百到數千台手機參與時才能解開「平均後」的更新，看不到單一手機的更新。</li>
+<li>限制：不是所有問題都適用，例如需要人工仔細標註的任務（辨識狗的品種）；很多資料本來就在雲端的任務（垃圾郵件過濾）也不需要。</li>
+</ol></section>
+<section id="p-log" data-page="log" hidden><p class="crumb">過程紀錄</p><h1>執行紀錄 log.md</h1><p>格式：<code>## [日期 時間] 節點 | 做了什麼</code>，下面記結果 PASS/FAIL、問題、處理、重試次數。</p>
+<h2>[2026-11-10 19:13] N0 範圍討論 | 定主題 Edge AI、讀者、要講與不講</h2>
+<ul>
+<li>結果：PASS</li>
+<li>紀錄：discussion/N0-N1-範圍與來源討論.md</li>
+<li>自我反駁 1 次：否決用「市場規模」當引入（會過時）</li>
+</ul>
+<h2>[2026-11-10 19:14] N1 蒐集來源 | 搜尋 6 組關鍵字，候選 10 篇</h2>
+<ul>
+<li>結果：PASS（6 收、4 不收）</li>
+<li>品質關卡：二手整理文（Simplilearn、Built In、TechTarget、KDnuggets）不收，改找一手來源</li>
+<li>重試：0</li>
+</ul>
+<h2>[2026-11-10 19:15] N2 ingest | S1 IBM〈What is edge AI?〉</h2>
+<ul>
+<li>新增：edge-ai、cloud-vs-edge、edge-hardware、use-cases、glossary、sources</li>
+<li>衝突：無（第一篇）</li>
+<li>排除：市場預測數字</li>
+</ul>
+<h2>[2026-11-10 19:15] N2 ingest | S2 Zhou et al. 2019</h2>
+<ul>
+<li>新增：training-vs-inference、edge-intelligence-levels、inference-kpis；修改 edge-ai、cloud-vs-edge</li>
+<li>衝突：⚠️ 定義衝突（S1 狹義 vs S2 廣義）→ 兩者都記，採 S2</li>
+<li>標記 ⏳ 舊資料 2 筆（Cisco 2021 預測、Gartner 2018 預測），不進 wiki 正文</li>
+<li>備註：PDF 只讀了第 I–V 節（約 70%），第 VI 節未來方向未讀</li>
+</ul>
+<h2>[2026-11-10 19:16] N2 ingest | S3 Deep Compression</h2>
+<ul>
+<li>新增：model-compression、pruning；建立 quantization</li>
+<li>衝突：剪枝與省電的關係（S2 提醒 vs S3 能效數據）→ 加註，誤解頁收錄</li>
+</ul>
+<h2>[2026-11-10 19:16] N2 ingest | S4 LiteRT 訓練後量化</h2>
+<ul>
+<li>修改：quantization（加三種方法表）、model-compression</li>
+<li>重複處理：S3 的「訓練量化」與 S4 的「訓練後量化」分開寫</li>
+</ul>
+<h2>[2026-11-10 19:17] N2 ingest | S5 MCUNet</h2>
+<ul>
+<li>新增：tinyml-mcunet；修改 edge-hardware</li>
+<li>衝突：⚠️ 同篇數字不一致（記憶體少 4.8 倍 vs 3.4 倍）→ 兩者都記，簡報不用</li>
+</ul>
+<h2>[2026-11-10 19:17] N2 ingest | S6 Google 聯邦學習</h2>
+<ul>
+<li>新增：federated-learning；修改 misconceptions、use-cases</li>
+<li>衝突：S1「訓練在雲端」vs S6「訓練在手機」→ 用 S2 分級解釋，不矛盾</li>
+<li>Ingest 小計：6 篇來源、16 個 wiki 頁（含 index、glossary、sources）</li>
+</ul>
+<h2>[2026-11-10 19:22] N3 Wiki Lint | 第 1 次（checks/lint_run1_pass1.md）</h2>
+<ul>
+<li>結果：FAIL，21 個問題</li>
+<li>孤兒頁 2：glossary、sources 只有 index 連到 → edge-ai 加連 glossary，glossary 加連 sources</li>
+<li>術語未定義 18：激活值、反向傳播、量化感知訓練、DRAM、top-1 等 → glossary 補 18 條定義</li>
+<li>衝突未處理 1：其實是 lint 工具誤判（log.md 不該被檢查）→ 修工具，跳過 log</li>
+<li>重試：1</li>
+</ul>
+<h2>[2026-11-10 19:24] N3 Wiki Lint | 第 2 次（checks/lint_run1_pass2.md）</h2>
+<ul>
+<li>結果：FAIL，2 個問題</li>
+<li>「卷積層／全連接層」合寫成一條，工具找不到「全連接層」→ 拆成兩條</li>
+<li>「top-1」的 1 被當成數字 → 工具誤判，改成粗體術語名不算數字</li>
+<li>重試：2</li>
+</ul>
+<h2>[2026-11-10 19:25] N3 Wiki Lint | 第 3 次 + 反向測試</h2>
+<ul>
+<li>第 3 次 PASS，但我故意塞一句「剪枝減少 20 倍<a class="tag" href="#raw-s3">S3</a>」測試工具，<strong>沒有抓到</strong></li>
+<li>原因：數字回查用子字串比對，「20」誤配到 raw 裡的「2016」→ 工具其實形同虛設</li>
+<li>修正：改成數字邊界比對；反向測試成功抓到假數字</li>
+<li>第 4 次（checks/lint_run1_pass4.md）：PASS，0 個問題</li>
+<li>心得：檢查工具本身也要被檢查，PASS 不代表真的沒問題</li>
+</ul>
+<h2>[2026-11-10 19:31] N3 產出 HTML Wiki | tools/build_wiki_html.py → site/edge-ai-wiki.html</h2>
+<ul>
+<li>技術檢查（tools/check_wiki_html.py，桌機 1280px＋手機 390px）</li>
+<li>第 1 次：FAIL，手機版 sources、raw-s4 兩頁出現橫向捲動（長網址撐開版面）→ 加 overflow-wrap</li>
+<li>第 2 次：PASS（26 個區塊都能切換、0 個壞連結、0 個橫向捲動）</li>
+<li>看截圖再修：桌機目錄連結擠成一行、關係圖標籤被切掉 → 改成直排目錄、圖上用短標題</li>
+<li>備註：沙盒連不到 Google Fonts 的 2 個錯誤訊息屬環境限制，線上正常</li>
+<li>已發佈 HTML Wiki（artifact）</li>
+</ul>
+<h2>[2026-11-10 19:40] N4 教學大綱 | Query wiki/index.md → slides/outline.md</h2>
+<ul>
+<li>結果：PASS（17 頁；15 個概念頁用到 14 頁）</li>
+<li>每頁只列一個主要的依據 wiki 頁</li>
+</ul>
+<h2>[2026-11-10 19:44] N5 生成 | Run 1 第一版 slides/edge-ai-slides.html（17 頁）</h2>
+<ul>
+<li>每頁用 data-wiki 標記依據頁</li>
+</ul>
+<h2>[2026-11-10 19:46] N6 內容檢查 | Run 1 第 1 次（checks/slides_run1_pass1.md）</h2>
+<ul>
+<li>結果：FAIL，68 項中 8 項失敗</li>
+<li>b 數字查無 3 頁（5 個數字）：</li>
+<li>第 4 頁「2019」、第 10 頁「32」「2016」：內容其實來自 sources、quantization 頁，但 data-wiki 沒列 → <strong>生成時用了大綱沒指定的 wiki 頁</strong></li>
+<li>第 9 頁「100～1000 倍」：我自己把「2～3 個數量級」換算成倍數，wiki 沒有 → <strong>生成時自行推導數字</strong></li>
+<li>c 術語未解釋 4 頁：「雲端 AI」（p2）、「訓練／推論」（p4，第 6 頁才教）、「聯邦學習」（p8，第 13 頁才教）、「ImageNet」（p10，第 12 頁才解釋）→ <strong>術語在被教之前就先用了</strong></li>
+<li>d 密度 1 頁：第 17 頁參考文獻 6 條 → 規則修正：參考文獻清單不算教學密度</li>
+<li>處理：補 data-wiki、刪掉自行換算的倍數、在首次出現處加 <dfn></li>
+<li>重試：1</li>
+</ul>
+<h2>[2026-11-10 19:48] N6 內容檢查 | Run 1 第 2 次（checks/slides_run1_pass2.md）</h2>
+<ul>
+<li>結果：PASS（68/68）</li>
+<li>人工複查又發現 1 個漏網之魚：第 9 頁我改寫成「一個數量級就是差 10 倍」，「10」剛好在 tinyml-mcunet 頁（每秒 10 次推論）出現，所以工具誤判成有來源 → 改成不含數字的說法</li>
+<li>心得：數字比對只看「數字有沒有出現」，不看「意思一不一樣」，會漏掉巧合</li>
+</ul>
+<h2>[2026-11-10 19:52] N7 技術檢查 | tools/check_slides_tech.py（1280×720 與 390×844）</h2>
+<ul>
+<li>結果：PASS：17 頁可鍵盤翻到底（17 / 17）、0 頁內容溢出、0 頁橫向捲動、測驗 3/3 題有回饋、0 個 console 錯誤</li>
+<li>看截圖再修：卡片被拉高留大片空白、字太小、聯邦學習循環圖沒有箭頭 → 調整版面與字級、補箭頭後重跑仍 PASS</li>
+</ul>
+<h2>[2026-11-10 20:02] F 回顧 Run 1 | 統計各節點錯誤</h2>
+<ul>
+<li>N3 Wiki Lint：21 個內容問題（術語未定義 18、孤兒頁 2、術語合寫 1）＋ 3 個 lint 工具本身的 bug</li>
+<li>N3 HTML 檢查：1 次 FAIL（手機橫向捲動 2 頁）</li>
+<li>N6 簡報內容：8 個（術語先用後教 4、數字不在指定 wiki 頁 3、太擠 1）＋人工抓到 1 個（巧合數字）</li>
+<li>N7 技術：0</li>
+<li>錯誤來源：N2 寫 wiki（21 個，其中 19 個是術語沒定義或合寫）、N5 生成簡報（9 個，種類最多）</li>
+<li>根本原因：檢查都排在「生成之後」；大綱（N4）只寫「這頁用哪個 wiki 頁」，沒有規定「能用哪幾句」「哪頁教哪個術語」，生成時就自由發揮</li>
+<li>決定：改成 Workflow v2（見 discussion/F-workflow-v1-v2.md）</li>
+</ul>
+<h2>[2026-11-10 20:05] Run 2 / N4 v2 | 產生事實卡 slides/factcards.json（17 頁、75 張）</h2>
+<h2>[2026-11-10 20:06] Run 2 / N4.5 大綱檢查（v2 新增，生成前）| checks/outline_run2_pass1.md</h2>
+<ul>
+<li>結果：FAIL，7 個問題 → <strong>在生成前就抓到</strong></li>
+<li>「延遲」第 3 頁就會用到，卻排在第 5 頁才教 → 改成第 3 頁教</li>
+<li>「卸載」「權重共享」「k-means」出現在事實裡但沒有頁面負責教 → 判斷對新手太深，列入 avoid（不准出現在簡報）</li>
+<li>glossary 把「TinyNAS／TinyEngine」合寫成一條 → 拆開（和 Run 1 的「卷積層／全連接層」是同一種錯）</li>
+<li>第 2 次：PASS</li>
+</ul>
+<h2>[2026-11-10 20:10] Run 2 / N5 v2 | 每個論點加上 data-fact（共 101 個元素）</h2>
+<h2>[2026-11-10 20:12] Run 2 / N6 v2 逐句檢查 | checks/slides_run2_pass1.md</h2>
+<ul>
+<li>結果：FAIL 4（年份 2019、2016 沒有引用 sources 頁；測驗題的 L1、L6 沒引用等級表）＋ WARN 17</li>
+<li>17 條 WARN 人工複查，5 條確定是錯（checks/warn_review_run2.md）：多寫「位置」、「IBM 等企業文章多半」過度概括、「基地台」不在 wiki、「手機相機是 L3」來自沒有來源的<span class="tag syn" title="由多個來源整理，未含具體數字">整理</span>句、回顧頁引用錯頁</li>
+<li>這 5 個錯在 Run 1 的 v1 檢查全部 PASS（v1 只比數字，抓不到沒有數字的錯）</li>
+<li>處理：回 N4 補事實卡、回 N5 改寫句子；重試 1</li>
+</ul>
+<h2>[2026-11-10 20:15] Run 2 / N6 v2 第 2 次 | checks/slides_run2_pass2.md</h2>
+<ul>
+<li>結果：PASS（FAIL 0；WARN 9 條人工確認都是合理改寫）</li>
+<li>v1 檢查回歸測試：68/68 PASS</li>
+</ul>
+<h2>[2026-11-10 20:16] Run 2 / N7 技術檢查</h2>
+<ul>
+<li>結果：PASS（17/17 頁、0 溢出、0 橫向捲動、測驗 3/3、0 錯誤）</li>
+</ul>
+<h2>[2026-11-10 20:20] N8 發佈 | 簡報與 Wiki 都發佈為網頁</h2>
+<ul>
+<li>教學 HTML 簡報（17 頁）發佈；Wiki 更新第 2 版：加上 loop/graph 設計頁、10 份檢查報告、簡報連結</li>
+<li>下一步：繳交前在無痕視窗確認兩個連結都已開放分享</li>
+</ul>
+<h2>[2026-11-10 20:24] 驗證 | 繳交文字的數字逐一對回 checks/ 報告</h2>
+<ul>
+<li>發現 log 自己寫錯：Run 1 N6 數字問題寫成「4 頁」，報告實際是 3 頁（5 個數字）；N2 錯誤數寫成 19，實際 21 → 已更正</li>
+</ul></section>
+<section id="p-schema" data-page="schema" hidden><p class="crumb">過程紀錄</p><h1>Schema（CLAUDE.md）</h1><p>本 Wiki 採用 Karpathy 的 LLM Wiki 模式，分成三層：</p>
+<table>
+<thead>
+<tr>
+<th>層</th>
+<th>位置</th>
+<th>誰寫</th>
+<th>規則</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原始來源</td>
+<td><code>raw/</code></td>
+<td>人挑選、LLM 摘錄</td>
+<td>建立後不修改；每檔一篇來源，檔頭寫 ID、標題、作者、日期、URL、讀取日期</td>
+</tr>
+<tr>
+<td>Wiki</td>
+<td><code>wiki/</code></td>
+<td>LLM 維護</td>
+<td>下面的頁面格式；所有事實句都要有來源標記</td>
+</tr>
+<tr>
+<td>Schema</td>
+<td><code>CLAUDE.md</code>（本檔）</td>
+<td>人與 LLM 共同修訂</td>
+<td>修改要寫進 <code>wiki/log.md</code></td>
+</tr>
+</tbody>
+</table>
+<h2>三個操作</h2>
+<ul>
+<li><strong>Ingest</strong>：讀一篇新來源 → 寫 <code>raw/Sx-*.md</code> → 先列出「重點、與既有頁面的衝突、要改哪些頁」→ 再寫入或更新 wiki 頁 → 更新 <code>index.md</code>、<code>log.md</code>。</li>
+<li><strong>Query</strong>：回答問題或規劃簡報時，只讀 wiki 頁（必要時回 raw 查證），答案要標出用到的 wiki 頁。</li>
+<li><strong>Lint</strong>：跑 <code>tools/lint_wiki.py</code>，檢查壞連結、孤兒頁、沒有來源標記的事實句、術語表缺漏、來源之間的數字衝突。</li>
+</ul>
+<h2>頁面格式</h2>
+<pre><code># 頁面標題
+&gt; 一句話定義（給完全沒學過的人）
+
+## 重點
+- 事實句……<a class="tag" href="#raw-s1">S1</a>
+## 和其他概念的關係
+- &lt;a class=&quot;wl&quot; href=&quot;#其他頁面&quot;&gt;其他頁面&lt;/a&gt;：關係說明
+## 來源
+- S1、S2
+</code></pre>
+<h2>寫作規則</h2>
+<ol>
+<li><strong>來源標記</strong>：每個含事實的條列句，句尾必須有 <code>［S數字］</code>。沒有來源的推論句要寫 <code><span class="tag syn" title="由多個來源整理，未含具體數字">整理</span></code>，且不得含具體數字。</li>
+<li><strong>連結</strong>：用 <code>&lt;a class="wl" href="#檔名不含.md"&gt;檔名不含.md&lt;/a&gt;</code>。每頁至少被一頁連到（index 不算）。</li>
+<li><strong>數字</strong>：寫數字時保留單位與比較對象（「比 TF-Lite Micro 少 4.8 倍記憶體」，不能只寫「少 4.8 倍」）。</li>
+<li><strong>衝突</strong>：兩個來源說法不同時兩者都記，標 <code>⚠️ 衝突</code>，並寫採用哪個與理由。</li>
+<li><strong>時效</strong>：超過 5 年的預測數字標 <code>⏳ 舊資料</code>，不進簡報。</li>
+<li><strong>用字</strong>：繁體中文，術語第一次出現附英文，並在 <a class="wl" href="#glossary">術語表</a> 有定義。</li>
+<li><strong>不複製原文</strong>：一律用自己的話改寫。</li>
+</ol></section>
+<section id="p-talk-f" data-page="talk-f" hidden><p class="crumb">過程紀錄</p><h1>Loop／Graph 設計：Workflow v1 → v2</h1><h2>Workflow v1（第一次實際執行 Run 1 用的流程）</h2>
+<pre class="mermaid">flowchart LR
+  N0[N0 範圍討論] --&gt; N1[N1 蒐集來源&lt;br/&gt;品質關卡]
+  N1 --&gt; N2[N2 Ingest&lt;br/&gt;先討論再寫入]
+  N2 --&gt;|下一篇| N2
+  N2 --&gt; N3{N3 Wiki Lint}
+  N3 --&gt;|FAIL| N2
+  N3 --&gt;|PASS| N4[N4 大綱&lt;br/&gt;Query wiki]
+  N4 --&gt; N5[N5 逐頁生成]
+  N5 --&gt; N6{N6 內容檢查&lt;br/&gt;整頁數字＋術語}
+  N6 --&gt;|FAIL 重寫| N5
+  N6 --&gt;|wiki 缺資料| N1
+  N6 --&gt;|PASS| N7{N7 技術檢查}
+  N7 --&gt;|FAIL| N5
+  N7 --&gt;|PASS| N8[N8 發佈＋紀錄]
+</pre>
+<p>文字版：取得資料（N1）→ 逐篇 ingest（N2，loop）→ wiki 健檢（N3，不過就回 N2）→ 查 wiki 排大綱（N4）→ 逐頁生成（N5，loop）→ 內容檢查（N6，不過回 N5；wiki 缺資料回 N1/N2）→ 技術檢查（N7）→ 發佈（N8）</p>
+<h2>Run 1 發現的問題</h2>
+<table>
+<thead>
+<tr>
+<th>節點</th>
+<th>發現錯誤</th>
+<th>錯誤真正產生的地方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>N3 Wiki Lint</td>
+<td>21 個（術語沒定義 18）</td>
+<td>N2 寫 wiki 時</td>
+</tr>
+<tr>
+<td>N6 內容檢查</td>
+<td>8 個＋人工 1 個（術語先用後教 4、數字不在指定頁 3、太擠 1）</td>
+<td>N5 生成時</td>
+</tr>
+<tr>
+<td>N3／N7 技術</td>
+<td>1 個（手機橫向捲動）</td>
+<td>產 HTML 時</td>
+</tr>
+</tbody>
+</table>
+<p>問題都在「生成之後」才被抓到。大綱只寫「這頁看哪個 wiki 頁」，沒規定「能用哪幾句」「哪頁負責教哪個術語」，所以生成時會用到大綱外的內容、自己換算數字、術語還沒教就先用。</p>
+<h2>Workflow v2（Run 2 用的流程）</h2>
+<pre class="mermaid">flowchart LR
+  N0[N0 範圍討論] --&gt; N1[N1 蒐集來源]
+  N1 --&gt; N2[N2 Ingest]
+  N2 --&gt; L{每篇後&lt;br/&gt;術語＋來源 lint}
+  L --&gt;|FAIL| N2
+  L --&gt;|下一篇| N2
+  L --&gt;|全部完成| N3{N3 Wiki Lint}
+  N3 --&gt; N4[N4 大綱＋事實卡&lt;br/&gt;每頁可用哪幾句、教哪些術語]
+  N4 --&gt; N45{N4.5 大綱檢查&lt;br/&gt;生成前}
+  N45 --&gt;|FAIL| N4
+  N45 --&gt;|PASS| N5[N5 生成&lt;br/&gt;每句標 data-fact]
+  N5 --&gt; N6{N6 逐句檢查&lt;br/&gt;對事實卡＋人工複查 WARN}
+  N6 --&gt;|句子錯| N5
+  N6 --&gt;|事實卡不夠| N4
+  N6 --&gt;|PASS| N7{N7 技術檢查}
+  N7 --&gt; N8[N8 發佈]
+</pre>
+<p>改了三件事：
+1. <strong>新增 N4.5 大綱檢查</strong>：把「術語先用後教」「事實找不到」的檢查，從生成後（N6）往前移到生成前。
+2. <strong>N5 生成必須標註</strong>：每個論點都要寫出依據的事實卡 id，沒有依據的句子只能是不含數字的引導句（frame）。
+3. <strong>N6 改成逐句檢查</strong>：數字只能對它引用的那幾句比，不再對整頁比（避免巧合配對）；字面重疊太低的句子列成 WARN，由人工確認意思。
+4. （設計上）術語 lint 從「全部 ingest 完」往前移到「每篇 ingest 後」。Run 2 沒有新增來源，這條還沒實際跑到。</p>
+<h2>Run 1 vs Run 2</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Run 1（v1）</th>
+<th>Run 2（v2）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>生成前抓到的問題</td>
+<td>0</td>
+<td>7（N4.5）</td>
+</tr>
+<tr>
+<td>生成後抓到的問題</td>
+<td>8＋人工 1</td>
+<td>4 FAIL＋5 個語意錯誤（從 17 條 WARN 複查出來）</td>
+</tr>
+<tr>
+<td>v1 抓不到、v2 抓到的</td>
+<td>—</td>
+<td>5 個沒有數字的錯：多寫「位置」、過度概括、wiki 外的細節、無來源的例子、引用錯頁</td>
+</tr>
+<tr>
+<td>最後結果</td>
+<td>PASS</td>
+<td>PASS（9 條 WARN 經人工確認）</td>
+</tr>
+</tbody>
+</table>
+<h2>哪些步驟會重複（loop）</h2>
+<ul>
+<li>N2：每篇來源跑一次，共 6 次</li>
+<li>N5→N6：每頁生成後檢查，不過就重寫這一頁（最多 2 次）</li>
+<li>N3、N4.5、N6、N7：任何一個 FAIL 都回到上一個生成節點重做，再重跑檢查</li>
+</ul>
+<h2>為什麼這樣設計</h2>
+<ul>
+<li>錯誤越晚發現越貴：大綱階段改一行 JSON，比生成後改整頁 HTML 便宜。</li>
+<li>「可追溯」是教學簡報的底線：每句話都要能從簡報 → wiki → 原始來源一路查回去。</li>
+<li>檢查工具本身也會錯（Run 1 的數字比對有子字串 bug），所以每個檢查都要做反向測試，並保留人工複查。</li>
+</ul></section>
+<section id="p-talk-n0" data-page="talk-n0" hidden><p class="crumb">過程紀錄</p><h1>N0／N1：範圍與來源討論紀錄（2026-11-10）</h1><blockquote>
+<p>「先討論、後生成」：這份紀錄寫在任何 wiki 頁面之前。使用者交代全程不中斷，所以討論改成「AI 提案 → AI 自我反駁 → 定案」，每一點都寫下理由，事後可以檢查。</p>
+</blockquote>
+<h2>1. 主題與讀者</h2>
+<ul>
+<li>主題：<strong>Edge AI（邊緣 AI）</strong>：讓 AI 模型在手機、感測器、微控制器等靠近資料的裝置上執行。</li>
+<li>讀者：完全沒學過的大一新生，只知道「AI 會辨識圖片、聽懂語音」。</li>
+<li>為什麼選這題：和電子系的硬體背景（MCU、記憶體、功耗）直接相關，也避開課堂範例「AI Agents」。</li>
+</ul>
+<h2>2. 範圍（要講／不講）</h2>
+<table>
+<thead>
+<tr>
+<th>要講</th>
+<th>不講（太深或離題）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>邊緣 vs 雲端、為什麼要放在邊緣</td>
+<td>5G、MEC 網路架構細節</td>
+</tr>
+<tr>
+<td>訓練 vs 推論</td>
+<td>反向傳播的數學</td>
+</tr>
+<tr>
+<td>雲-邊-端協作的分級</td>
+<td>各種模型切分演算法</td>
+</tr>
+<tr>
+<td>資源限制（MCU 記憶體）</td>
+<td>晶片微架構</td>
+</tr>
+<tr>
+<td>模型壓縮：剪枝、量化</td>
+<td>量化的數學推導</td>
+</tr>
+<tr>
+<td>TinyML 實例：MCUNet</td>
+<td>神經架構搜尋演算法細節</td>
+</tr>
+<tr>
+<td>聯邦學習（資料不出手機的訓練）</td>
+<td>差分隱私、安全聚合的密碼學</td>
+</tr>
+<tr>
+<td>評估指標、常見誤解</td>
+<td>產品比較、價格</td>
+</tr>
+</tbody>
+</table>
+<p><strong>自我反駁</strong>：一開始想放「市場規模預測」當引入。否決：數字會過時，對理解概念沒幫助，改用生活例子（手錶跌倒偵測、智慧門鈴）。</p>
+<h2>3. 候選來源與篩選（N1 品質關卡）</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>來源</th>
+<th>類型</th>
+<th>決定</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1</td>
+<td>IBM Think〈What is edge AI?〉(2023，2026-04-02 更新)</td>
+<td>企業教學文章</td>
+<td>✅ 收</td>
+<td>定義、元件、好處、用例完整，適合新手；近期有更新</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>Zhou et al.〈Edge Intelligence: Paving the Last Mile of AI with Edge Computing〉Proc. IEEE 2019</td>
+<td>綜述論文</td>
+<td>✅ 收</td>
+<td>學術定義、六級評等、推論 KPI、技術分類</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>Han, Mao, Dally〈Deep Compression〉ICLR 2016</td>
+<td>經典論文</td>
+<td>✅ 收</td>
+<td>剪枝＋量化＋霍夫曼編碼的原始數據</td>
+</tr>
+<tr>
+<td>S4</td>
+<td>Google AI Edge〈LiteRT Post-training quantization〉官方文件</td>
+<td>官方文件</td>
+<td>✅ 收</td>
+<td>實務上怎麼量化、三種方法的效果</td>
+</tr>
+<tr>
+<td>S5</td>
+<td>Lin et al.〈MCUNet: Tiny Deep Learning on IoT Devices〉NeurIPS 2020</td>
+<td>論文</td>
+<td>✅ 收</td>
+<td>微控制器上的 TinyML 實例，連到電子系背景</td>
+</tr>
+<tr>
+<td>S6</td>
+<td>McMahan &amp; Ramage〈Federated Learning〉Google Research Blog 2017</td>
+<td>官方研究部落格</td>
+<td>✅ 收</td>
+<td>「訓練也在邊緣」的代表技術，有 Gboard 實例</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Simplilearn、Built In〈What is edge AI〉</td>
+<td>二手整理文</td>
+<td>❌ 不收</td>
+<td>內容和 S1 重複，且無原始資料</td>
+</tr>
+<tr>
+<td>—</td>
+<td>KDnuggets〈Federated Learning: Google's Take〉</td>
+<td>二手轉述</td>
+<td>❌ 不收</td>
+<td>改用原始的 S6</td>
+</tr>
+<tr>
+<td>—</td>
+<td>TechTarget〈What is edge AI〉</td>
+<td>百科式文章</td>
+<td>❌ 不收</td>
+<td>與 S1 重複</td>
+</tr>
+</tbody>
+</table>
+<p>結論：收 6 篇（作業要求至少 5 篇），涵蓋「概念（S1、S2）→ 技術（S3、S4、S5）→ 延伸（S6）」三層，每層至少一篇一手來源。</p>
+<h2>4. 預計 wiki 頁面</h2>
+<p>概念頁：edge-ai、cloud-vs-edge、training-vs-inference、edge-intelligence-levels
+技術頁：model-compression、pruning、quantization、tinyml-mcunet、federated-learning
+支撐頁：edge-hardware、inference-kpis、use-cases、misconceptions、glossary、sources</p></section>
+<section id="p-talk-n2" data-page="talk-n2" hidden><p class="crumb">過程紀錄</p><h1>N2：逐篇 Ingest 前的討論（先討論、後寫入）</h1><p>每篇都先回答三件事，再動 wiki：①3～5 個重點 ②和既有 wiki 有沒有衝突或重複 ③要新增／修改哪些頁。</p>
+<hr />
+<h2>Ingest 1｜S1 IBM〈What is edge AI?〉</h2>
+<p>① 重點：定義（AI 模型放在本地裝置）；訓練多在雲端、推論在邊緣；五種元件；九項好處；五個產業用例。
+② 衝突／重複：wiki 還是空的，無衝突。
+③ 要寫的頁：新增 edge-ai、cloud-vs-edge、edge-hardware、use-cases、glossary、sources。
+決定：S1 的市場預測數字不收（理由見 N0 討論）。</p>
+<h2>Ingest 2｜S2 Zhou et al. 2019</h2>
+<p>① 重點：資料在邊緣產生；雲端與純裝置各自的缺點；六級評等；推論六指標；推論加速技術清單。
+② 衝突：<strong>定義衝突</strong>。S1 把邊緣 AI 定義成「在本地裝置上跑模型」；S2 明確反對這個窄定義，主張雲-邊-端協作都算。
+　　處理：edge-ai 頁兩種定義都寫，簡報用 S2 的廣義定義、把 S1 的說法當作「最常見的形式」。
+　　另一處：S1 說訓練「通常」在雲端；S2 的 L4～L6 允許訓練也在邊緣。不算矛盾，是「常見做法」與「可能範圍」的差別。
+③ 要寫的頁：新增 training-vs-inference、edge-intelligence-levels、inference-kpis；修改 edge-ai（加廣義定義）、cloud-vs-edge（加雲端與裝置兩邊的缺點）。</p>
+<h2>Ingest 3｜S3 Deep Compression</h2>
+<p>① 重點：三階段壓縮；剪枝 9～13 倍、量化 32→5 位元；AlexNet 240MB→6.9MB、VGG-16 552MB→11.3MB；放得進 SRAM 才省電。
+② 衝突：S2 提醒「剪掉的權重數不等於省下的電」，S3 則報告能效提升 3～7 倍。兩者不矛盾（S3 有搭配量化與 SRAM 放置），但簡報不能寫成「剪枝就會省電」。
+③ 要寫的頁：新增 model-compression、pruning；quantization 先建立（量化的權重共享部分）。</p>
+<h2>Ingest 4｜S4 LiteRT 訓練後量化</h2>
+<p>① 重點：量化 = 降低數字精度；三種訓練後量化與效果；整數量化要代表性資料 100～500 筆；掉準確率改用量化感知訓練。
+② 重複：S3 也有量化，但 S3 是「訓練量化＋權重共享」，S4 是「訓練後量化」，方法不同，要在 quantization 頁分開寫，避免混用數字。
+③ 要寫的頁：修改 quantization（加實務做法表）；修改 model-compression（連到 LiteRT）。</p>
+<h2>Ingest 5｜S5 MCUNet</h2>
+<p>① 重點：MCU 記憶體比手機小 2～3 個數量級；SRAM 管激活值、Flash 管模型；TinyNAS＋TinyEngine；ImageNet &gt;70%。
+② 衝突：<strong>同一篇內數字不一致</strong>：摘要頁 v2 寫記憶體少 4.8 倍，PDF 內文寫峰值記憶體少 3.4 倍（可能是版本不同）。
+　　處理：wiki 兩個數字都記並標 ⚠️；簡報不放這個倍數，只講「推論快 1.7～3.3 倍」（兩處一致）。
+③ 要寫的頁：新增 tinyml-mcunet；修改 edge-hardware（加 SRAM/Flash）。</p>
+<h2>Ingest 6｜S6 Google 聯邦學習</h2>
+<p>① 重點：資料留在手機、只上傳更新；Gboard 實例；少 10～100 倍通訊；閒置＋充電＋Wi-Fi 才訓練；有不適用的情境。
+② 衝突：S1「訓練多在雲端」vs S6「訓練在手機上」→ 用 S2 的 L4～L6 解釋，屬於不同等級，不矛盾。
+③ 要寫的頁：新增 federated-learning；修改 edge-intelligence-levels（舉例）、misconceptions。</p></section>
+<section id="p-chk-lint-run1-pass1" data-page="chk-lint-run1-pass1" hidden><p class="crumb">檢查紀錄</p><h1>Run1 Wiki Lint 第 1 次</h1><ul>
+<li>檢查頁數：17</li>
+<li>問題總數：21</li>
+<li>結果：FAIL</li>
+</ul>
+<h2>孤兒頁（2）</h2>
+<ul>
+<li><code>sources</code>：除了 index 沒有其他頁連到這頁</li>
+<li><code>glossary</code>：除了 index 沒有其他頁連到這頁</li>
+</ul>
+<h2>衝突未處理（1）</h2>
+<ul>
+<li><code>log</code>：- 衝突：⚠️ 定義衝突（S1 狹義 vs S2 廣義）→ 兩者都記，採 S2</li>
+</ul>
+<h2>術語未定義（18）</h2>
+<ul>
+<li><code>edge-hardware,tinyml-mcunet</code>：「激活值」在正文出現但 glossary 沒有定義</li>
+<li><code>training-vs-inference</code>：「反向傳播」在正文出現但 glossary 沒有定義</li>
+<li><code>training-vs-inference</code>：「前向傳遞」在正文出現但 glossary 沒有定義</li>
+<li><code>training-vs-inference</code>：「損失函數」在正文出現但 glossary 沒有定義</li>
+<li><code>model-compression</code>：「霍夫曼編碼」在正文出現但 glossary 沒有定義</li>
+<li><code>quantization,model-compression</code>：「權重共享」在正文出現但 glossary 沒有定義</li>
+<li><code>quantization</code>：「k-means」在正文出現但 glossary 沒有定義</li>
+<li><code>quantization</code>：「代表性資料集」在正文出現但 glossary 沒有定義</li>
+<li><code>quantization</code>：「量化感知訓練」在正文出現但 glossary 沒有定義</li>
+<li><code>quantization</code>：「Edge TPU」在正文出現但 glossary 沒有定義</li>
+<li><code>quantization,edge-hardware,inference-kpis</code>：「GPU」在正文出現但 glossary 沒有定義</li>
+<li><code>edge-hardware</code>：「DRAM」在正文出現但 glossary 沒有定義</li>
+<li><code>tinyml-mcunet</code>：「ImageNet」在正文出現但 glossary 沒有定義</li>
+<li><code>tinyml-mcunet</code>：「top-1」在正文出現但 glossary 沒有定義</li>
+<li><code>edge-intelligence-levels</code>：「卸載」在正文出現但 glossary 沒有定義</li>
+<li><code>model-compression</code>：「全連接層」在正文出現但 glossary 沒有定義</li>
+<li><code>model-compression</code>：「卷積層」在正文出現但 glossary 沒有定義</li>
+<li><code>quantization</code>：「浮點數」在正文出現但 glossary 沒有定義</li>
+</ul></section>
+<section id="p-chk-lint-run1-pass2" data-page="chk-lint-run1-pass2" hidden><p class="crumb">檢查紀錄</p><h1>Run1 Wiki Lint 第 2 次</h1><ul>
+<li>檢查頁數：17</li>
+<li>問題總數：2</li>
+<li>結果：FAIL</li>
+</ul>
+<h2><span class="tag syn" title="由多個來源整理，未含具體數字">整理</span>句含數字（1）</h2>
+<ul>
+<li><code>glossary</code>：- <strong>top-1 準確率</strong>：模型「第一個猜的答案」就是正確答案的比例。<span class="tag syn" title="由多個來源整理，未含具體數字">整理</span></li>
+</ul>
+<h2>術語未定義（1）</h2>
+<ul>
+<li><code>model-compression</code>：「全連接層」在正文出現但 glossary 沒有定義</li>
+</ul></section>
+<section id="p-chk-lint-run1-pass4" data-page="chk-lint-run1-pass4" hidden><p class="crumb">檢查紀錄</p><h1>Run1 Wiki Lint 最終</h1><ul>
+<li>檢查頁數：17</li>
+<li>問題總數：0</li>
+<li>結果：PASS</li>
+</ul></section>
+<section id="p-chk-slides-run1-pass1" data-page="chk-slides-run1-pass1" hidden><p class="crumb">檢查紀錄</p><h1>Run1 簡報檢查 第 1 次</h1><ul>
+<li>投影片數：17</li>
+<li>檢查項次：68，FAIL：8</li>
+<li>結果：FAIL</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>頁</th>
+<th>檢查</th>
+<th>結果</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>c 術語</td>
+<td>FAIL</td>
+<td>首次出現未解釋：['雲端 AI']</td>
+</tr>
+<tr>
+<td>4</td>
+<td>b 數字</td>
+<td>FAIL</td>
+<td>wiki 查無：['2019']</td>
+</tr>
+<tr>
+<td>4</td>
+<td>c 術語</td>
+<td>FAIL</td>
+<td>首次出現未解釋：['推論', '訓練']</td>
+</tr>
+<tr>
+<td>8</td>
+<td>c 術語</td>
+<td>FAIL</td>
+<td>首次出現未解釋：['聯邦學習']</td>
+</tr>
+<tr>
+<td>9</td>
+<td>b 數字</td>
+<td>FAIL</td>
+<td>wiki 查無：['100', '1000']</td>
+</tr>
+<tr>
+<td>10</td>
+<td>b 數字</td>
+<td>FAIL</td>
+<td>wiki 查無：['32', '2016']</td>
+</tr>
+<tr>
+<td>10</td>
+<td>c 術語</td>
+<td>FAIL</td>
+<td>首次出現未解釋：['ImageNet']</td>
+</tr>
+<tr>
+<td>17</td>
+<td>d 密度</td>
+<td>FAIL</td>
+<td>331 字、最長清單 6 點</td>
+</tr>
+</tbody>
+</table>
+<p>（PASS 的 60 項省略）</p></section>
+<section id="p-chk-slides-run1-pass2" data-page="chk-slides-run1-pass2" hidden><p class="crumb">檢查紀錄</p><h1>Run1 簡報檢查 第 2 次</h1><ul>
+<li>投影片數：17</li>
+<li>檢查項次：68，FAIL：0</li>
+<li>結果：PASS</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>頁</th>
+<th>檢查</th>
+<th>結果</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>（PASS 的 68 項省略）</p></section>
+<section id="p-chk-outline-run2-pass1" data-page="chk-outline-run2-pass1" hidden><p class="crumb">檢查紀錄</p><h1>Run2 大綱檢查 第 1 次</h1><ul>
+<li>投影片數：17</li>
+<li>事實卡數：75</li>
+<li>問題數：7</li>
+<li>結果：FAIL</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>頁</th>
+<th>問題</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>術語先用後教</td>
+<td>「延遲」第 5 頁才教</td>
+</tr>
+<tr>
+<td>8</td>
+<td>術語沒有安排教學</td>
+<td>「卸載」出現在事實中，但沒有任何一頁負責解釋</td>
+</tr>
+<tr>
+<td>10</td>
+<td>術語沒有安排教學</td>
+<td>「權重共享」出現在事實中，但沒有任何一頁負責解釋</td>
+</tr>
+<tr>
+<td>10</td>
+<td>術語沒有安排教學</td>
+<td>「k-means」出現在事實中，但沒有任何一頁負責解釋</td>
+</tr>
+<tr>
+<td>12</td>
+<td>術語不在 glossary</td>
+<td>TinyNAS</td>
+</tr>
+<tr>
+<td>12</td>
+<td>術語不在 glossary</td>
+<td>TinyEngine</td>
+</tr>
+<tr>
+<td>16</td>
+<td>術語沒有安排教學</td>
+<td>「卸載」出現在事實中，但沒有任何一頁負責解釋</td>
+</tr>
+</tbody>
+</table></section>
+<section id="p-chk-outline-run2-pass2" data-page="chk-outline-run2-pass2" hidden><p class="crumb">檢查紀錄</p><h1>Run2 大綱檢查 第 2 次</h1><ul>
+<li>投影片數：17</li>
+<li>事實卡數：75</li>
+<li>問題數：0</li>
+<li>結果：PASS</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>頁</th>
+<th>問題</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></section>
+<section id="p-chk-slides-run2-pass1" data-page="chk-slides-run2-pass1" hidden><p class="crumb">檢查紀錄</p><h1>Run2 逐句檢查 第 1 次</h1><ul>
+<li>FAIL：4　WARN（需人工複查）：17</li>
+<li>結果：FAIL</li>
+</ul>
+<h2>FAIL</h2>
+<table>
+<thead>
+<tr>
+<th>頁</th>
+<th>檢查</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>b 數字</td>
+<td>「2019」不在引用句 ['edge-ai#4']：Zhou 等人（2019）認為只看「裝置上跑模型」太窄。本簡</td>
+</tr>
+<tr>
+<td>10</td>
+<td>b 數字</td>
+<td>「2016」不在引用句 ['model-compression#4']：資料：Deep Compression（Han 等，ICLR</td>
+</tr>
+<tr>
+<td>16</td>
+<td>b 數字</td>
+<td>「1」不在引用句 ['edge-intelligence-levels#8']：2. 邊緣智慧等級從 L1 升到 L6，下列何者「不一定」變</td>
+</tr>
+<tr>
+<td>16</td>
+<td>b 數字</td>
+<td>「6」不在引用句 ['edge-intelligence-levels#8']：2. 邊緣智慧等級從 L1 升到 L6，下列何者「不一定」變</td>
+</tr>
+</tbody>
+</table>
+<h2>WARN：論點和引用原句字面重疊低（&lt; 0.2），請人工確認意思一致</h2>
+<table>
+<thead>
+<tr>
+<th>頁</th>
+<th>重疊率</th>
+<th>引用</th>
+<th>論點</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>0.13</td>
+<td>cloud-vs-edge#4</td>
+<td>感測資料要先上傳，等雲端算完再回傳</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.08</td>
+<td>edge-ai#5</td>
+<td>網路不穩或沒訊號時，就判斷不了</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.13</td>
+<td>cloud-vs-edge#4 use-cases#1</td>
+<td>心率、位置這些私人資料都要離開手錶</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.14</td>
+<td>edge-ai#5</td>
+<td>不用等網路，反應快</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.00</td>
+<td>use-cases#1</td>
+<td>資料留在身上</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0.07</td>
+<td>edge-ai#4</td>
+<td>IBM 等企業文章多半用這個定義。</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0.13</td>
+<td>edge-ai#4</td>
+<td>Zhou 等人（2019）認為只看「裝置上跑模型」太窄。本簡報採用這個說法。</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0.07</td>
+<td>edge-ai#1</td>
+<td>關鍵字只有一個： 靠近資料產生的地方 。</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.11</td>
+<td>cloud-vs-edge#1 cloud-vs-edge#4</td>
+<td>裝置 手錶、攝影機 邊緣節點 閘道、基地台旁 雲端 遠端資料中心 快、資料不出門</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.18</td>
+<td>cloud-vs-edge#5</td>
+<td>全部放裝置：運算和電力不夠</td>
+</tr>
+<tr>
+<td>8</td>
+<td>0.08</td>
+<td>edge-intelligence-levels#4</td>
+<td>例：手機相機辨識場景多半是 L3； 聯邦學習 把訓練也搬到手機上。</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.07</td>
+<td>model-compression#4</td>
+<td>資料：Deep Compression（Han 等，ICLR 2016），在 I</td>
+</tr>
+<tr>
+<td>12</td>
+<td>0.08</td>
+<td>tinyml-mcunet#4</td>
+<td>兩者一起設計，才塞得進微控制器</td>
+</tr>
+<tr>
+<td>16</td>
+<td>0.17</td>
+<td>training-vs-inference#3</td>
+<td>1. 邊緣裝置最常負責哪一件事？ 訓練大模型 推論 儲存所有資料 推論只做前向傳</td>
+</tr>
+<tr>
+<td>17</td>
+<td>0.08</td>
+<td>edge-ai#3</td>
+<td>邊緣 AI 把 AI 放到靠近資料的地方，換來速度、隱私和斷網也能用</td>
+</tr>
+<tr>
+<td>17</td>
+<td>0.10</td>
+<td>cloud-vs-edge#6 edge-intelligence-levels#9</td>
+<td>它和雲端是分工，不是取代；用六個等級思考分工方式</td>
+</tr>
+<tr>
+<td>17</td>
+<td>0.05</td>
+<td>model-compression#4 tinyml-mcunet#4</td>
+<td>小裝置跑得動，靠的是壓縮模型，以及軟硬體一起設計</td>
+</tr>
+</tbody>
+</table></section>
+<section id="p-chk-slides-run2-pass2" data-page="chk-slides-run2-pass2" hidden><p class="crumb">檢查紀錄</p><h1>Run2 逐句檢查 第 2 次</h1><ul>
+<li>FAIL：0　WARN（需人工複查）：9</li>
+<li>結果：PASS</li>
+</ul>
+<h2>FAIL</h2>
+<table>
+<thead>
+<tr>
+<th>頁</th>
+<th>檢查</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-</td>
+<td>-</td>
+<td>無</td>
+</tr>
+</tbody>
+</table>
+<h2>WARN：論點和引用原句字面重疊低（&lt; 0.2），請人工確認意思一致</h2>
+<table>
+<thead>
+<tr>
+<th>頁</th>
+<th>重疊率</th>
+<th>引用</th>
+<th>論點</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>0.13</td>
+<td>cloud-vs-edge#4</td>
+<td>感測資料要先上傳，等雲端算完再回傳</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.00</td>
+<td>cloud-vs-edge#3</td>
+<td>網路不穩或沒訊號時，就判斷不了</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.14</td>
+<td>edge-ai#5</td>
+<td>不用等網路，反應快</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.18</td>
+<td>cloud-vs-edge#5</td>
+<td>全部放裝置：運算和電力不夠</td>
+</tr>
+<tr>
+<td>12</td>
+<td>0.08</td>
+<td>tinyml-mcunet#4</td>
+<td>兩者一起設計，才塞得進微控制器</td>
+</tr>
+<tr>
+<td>16</td>
+<td>0.17</td>
+<td>training-vs-inference#3</td>
+<td>1. 邊緣裝置最常負責哪一件事？ 訓練大模型 推論 儲存所有資料 推論只做前向傳</td>
+</tr>
+<tr>
+<td>17</td>
+<td>0.12</td>
+<td>edge-ai#3 edge-ai#5 cloud-vs-edge#4</td>
+<td>邊緣 AI 把 AI 放到靠近資料的地方，換來速度、隱私和斷網也能用</td>
+</tr>
+<tr>
+<td>17</td>
+<td>0.10</td>
+<td>cloud-vs-edge#6 edge-intelligence-levels#9</td>
+<td>它和雲端是分工，不是取代；用六個等級思考分工方式</td>
+</tr>
+<tr>
+<td>17</td>
+<td>0.05</td>
+<td>model-compression#4 tinyml-mcunet#4</td>
+<td>小裝置跑得動，靠的是壓縮模型，以及軟硬體一起設計</td>
+</tr>
+</tbody>
+</table></section>
+<section id="p-chk-warn-review-run2" data-page="chk-warn-review-run2" hidden><p class="crumb">檢查紀錄</p><h1>Run2 WARN 人工複查</h1><table>
+<thead>
+<tr>
+<th>頁</th>
+<th>論點</th>
+<th>引用</th>
+<th>判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>感測資料要先上傳，等雲端算完再回傳</td>
+<td>cloud-vs-edge#4（送雲端有傳輸延遲）</td>
+<td>一致：白話改寫</td>
+</tr>
+<tr>
+<td>3</td>
+<td>網路不穩或沒訊號時，就判斷不了</td>
+<td>cloud-vs-edge#3（本地處理可避免連線問題）</td>
+<td>一致：反面敘述</td>
+</tr>
+<tr>
+<td>3</td>
+<td>不用等網路，反應快</td>
+<td>edge-ai#5（有沒有網路都能處理，毫秒等級）</td>
+<td>一致</td>
+</tr>
+<tr>
+<td>5</td>
+<td>全部放裝置：運算和電力不夠</td>
+<td>cloud-vs-edge#5（效能與能源效率不佳）</td>
+<td>一致</td>
+</tr>
+<tr>
+<td>12</td>
+<td>兩者一起設計，才塞得進微控制器</td>
+<td>tinyml-mcunet#4（同時設計 TinyNAS 與 TinyEngine）</td>
+<td>一致</td>
+</tr>
+<tr>
+<td>16</td>
+<td>測驗第 1 題</td>
+<td>training-vs-inference#3</td>
+<td>一致：題目＋解析</td>
+</tr>
+<tr>
+<td>17</td>
+<td>換來速度、隱私和斷網也能用</td>
+<td>edge-ai#3、#5、cloud-vs-edge#4</td>
+<td>一致：三句合併</td>
+</tr>
+<tr>
+<td>17</td>
+<td>分工，不是取代；用六個等級思考</td>
+<td>cloud-vs-edge#6、levels#9</td>
+<td>一致</td>
+</tr>
+<tr>
+<td>17</td>
+<td>靠壓縮模型，以及軟硬體一起設計</td>
+<td>model-compression#4、tinyml-mcunet#4</td>
+<td>一致</td>
+</tr>
+</tbody>
+</table>
+<p>第一輪（pass1）的 17 條 WARN 中，有 5 條判定「不一致」並已修正：
+1. p3「心率、<strong>位置</strong>這些私人資料」：wiki 沒提到位置 → 刪掉「位置」
+2. p4「IBM <strong>等企業文章多半</strong>用這個定義」：只有一篇來源，過度概括 → 改成「IBM 的教學文章用這個定義」
+3. p5 圖中「邊緣節點：閘道、<strong>基地台旁</strong>」：基地台只在 raw 出現，wiki 沒收 → 改成「閘道、邊緣伺服器」
+4. p8「手機相機辨識場景多半是 <strong>L3</strong>」：wiki 中這句是<span class="tag syn" title="由多個來源整理，未含具體數字">整理</span>自己舉的例子，沒有來源 → 改用聯邦學習（有來源）當例子
+5. p17「斷網也能用」引用錯頁（edge-ai#3 沒講斷網）→ 補引用 edge-ai#5、cloud-vs-edge#4</p></section>
+  </main>
+</div>
+<script>
+(function () {
+  var ids = ["home", "edge-ai", "cloud-vs-edge", "training-vs-inference", "edge-intelligence-levels", "model-compression", "pruning", "quantization", "tinyml-mcunet", "federated-learning", "edge-hardware", "inference-kpis", "use-cases", "misconceptions", "glossary", "sources", "raw-s1", "raw-s2", "raw-s3", "raw-s4", "raw-s5", "raw-s6", "log", "schema", "talk-f", "talk-n0", "talk-n2", "chk-lint-run1-pass1", "chk-lint-run1-pass2", "chk-lint-run1-pass4", "chk-slides-run1-pass1", "chk-slides-run1-pass2", "chk-outline-run2-pass1", "chk-outline-run2-pass2", "chk-slides-run2-pass1", "chk-slides-run2-pass2", "chk-warn-review-run2"];
+  var links = document.querySelectorAll("nav a");
+  function show() {
+    var id = (location.hash || "#home").slice(1);
+    if (ids.indexOf(id) < 0) id = "home";
+    document.querySelectorAll("section[data-page]").forEach(function (s) { s.hidden = s.dataset.page !== id; });
+    links.forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + id); });
+    document.getElementById("nav").classList.remove("open");
+    document.getElementById("menuBtn").setAttribute("aria-expanded", "false");
+    window.scrollTo(0, 0);
+  }
+  document.getElementById("menuBtn").addEventListener("click", function () {
+    var n = document.getElementById("nav"); n.classList.toggle("open");
+    this.setAttribute("aria-expanded", n.classList.contains("open") ? "true" : "false");
+  });
+  window.addEventListener("hashchange", show);
+  show();
+})();
+</script>
+
+</body>
+</html>

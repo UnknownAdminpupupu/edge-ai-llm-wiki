@@ -1,0 +1,121 @@
+<title>Edge AI Wiki</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout：左側目錄（像電路板上的元件清單）＋右側閱讀欄；手機改成頂部可展開目錄 */
+:root {
+  --bg: #f2f4f3;        /* 防焊漆淡綠灰 */
+  --panel: #e6ebe8;
+  --ink: #18201d;
+  --muted: #5a6762;
+  --line: #cbd4d0;
+  --copper: #a8541f;    /* 銅箔走線 */
+  --copper-soft: #f3dfcf;
+  --g1: #2f6f5e; --g2: #a8541f; --g3: #5a6a8a;
+  --f-display: "Space Grotesk", "Noto Sans TC", system-ui, sans-serif;
+  --f-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121715; --panel: #1a211e; --ink: #e3e9e6; --muted: #9aa8a2; --line: #2c3632;
+  --copper: #e09662; --copper-soft: #3a2a1f; --g1: #6cbfa7; --g2: #e09662; --g3: #9fb0d4; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121715; --panel: #1a211e; --ink: #e3e9e6; --muted: #9aa8a2; --line: #2c3632;
+  --copper: #e09662; --copper-soft: #3a2a1f; --g1: #6cbfa7; --g2: #e09662; --g3: #9fb0d4; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.75 }
+.wrap { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 100% }
+nav { background: var(--panel); border-right: 1px solid var(--line); padding-block: 24px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: 16px;
+  position: sticky; top: env(safe-area-inset-top, 0px); height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 2px }
+.brand { font-family: var(--f-display); font-weight: 700; font-size: 20px; letter-spacing: .01em; margin: 0 0 4px }
+.brand span { color: var(--copper) }
+.by { color: var(--muted); font-size: 12px; margin: 0 0 16px }
+nav a { color: var(--ink); text-decoration: none; font-size: 14px; padding: 4px 8px; border-radius: 4px; line-height: 1.45 }
+nav a:hover { background: var(--copper-soft) }
+nav a.on { background: var(--copper); color: var(--bg) }
+.navg { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 16px 0 4px 8px }
+.menu-btn { display: none }
+.links { display: flex; flex-direction: column; gap: 2px }
+main { padding-block: 40px 80px; padding-left: max(16px, 5vw); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+section { max-width: 72ch; overflow-wrap: anywhere }
+.crumb { font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; color: var(--copper); margin: 0 }
+h1 { font-family: var(--f-display); font-size: clamp(26px, 4vw, 36px); line-height: 1.25; margin: 4px 0 20px; text-wrap: balance }
+h2 { font-family: var(--f-display); font-size: 20px; margin: 32px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--line) }
+blockquote { margin: 0 0 20px; padding: 12px 16px; background: var(--copper-soft); border-radius: 6px; font-size: 17px }
+blockquote p { margin: 0 }
+ul { padding-left: 1.2em } li { margin: 4px 0 }
+a { color: var(--copper) }
+a.wl { text-decoration: none; border-bottom: 1px dashed var(--copper); font-weight: 500 }
+.tag { display: inline-block; font-family: var(--f-mono); font-size: 11px; line-height: 1; padding: 3px 5px; margin-left: 4px; border-radius: 3px;
+  background: var(--panel); border: 1px solid var(--line); color: var(--muted); text-decoration: none; vertical-align: 1px }
+.tag:hover { border-color: var(--copper); color: var(--copper) }
+.tag.syn { font-style: normal }
+table { border-collapse: collapse; width: 100%; font-size: 14px; display: block; overflow-x: auto }
+th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top }
+th { background: var(--panel); font-weight: 700 }
+code, pre { font-family: var(--f-mono); font-size: 13px }
+pre { background: var(--panel); padding: 12px; border-radius: 6px; overflow-x: auto }
+.lede { font-size: 17px; color: var(--muted) }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 20px 0 }
+.stats div { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px; display: flex; flex-direction: column }
+.stats b { font-family: var(--f-mono); font-size: 28px; color: var(--copper); font-variant-numeric: tabular-nums }
+.stats span { font-size: 13px; color: var(--muted) }
+.graph { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px }
+.graph svg { width: 100%; min-width: 560px; height: auto; display: block }
+.edge { stroke: var(--line); stroke-width: 1.2 }
+.node { stroke: var(--bg); stroke-width: 2 }
+.node.g1 { fill: var(--g1) } .node.g2 { fill: var(--g2) } .node.g3 { fill: var(--g3) }
+.nlabel { fill: var(--ink); font-size: 12px; font-family: var(--f-body) }
+.graph a:hover .nlabel { fill: var(--copper); text-decoration: underline }
+.hint { font-size: 14px; color: var(--muted) }
+.lg { display: inline-flex; align-items: center; gap: 4px; margin-left: 12px; font-size: 13px }
+.lg::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: currentColor }
+.lg.g1 { color: var(--g1) } .lg.g2 { color: var(--g2) } .lg.g3 { color: var(--g3) }
+:focus-visible { outline: 2px solid var(--copper); outline-offset: 2px }
+@media (max-width: 760px) {
+  .wrap { grid-template-columns: minmax(0, 1fr) }
+  nav { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+  nav .links { display: none; flex-direction: column; gap: 2px }
+  nav.open .links { display: flex }
+  .menu-btn { display: inline-block; align-self: flex-start; font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--line); background: var(--bg); color: var(--ink) }
+  main { padding-left: max(16px, env(safe-area-inset-left, 0px)) }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+}
+@media (prefers-reduced-motion: no-preference) { section:not([hidden]) { animation: in .25s ease-out } @keyframes in { from { transform: translateY(6px) } to { transform: none } } }
+</style>
+<div class="wrap">
+  <nav id="nav">
+    <p class="brand">Edge AI <span>Wiki</span></p>
+    <p class="by">北科電子 112360106 黃資宸</p>
+    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false">目錄</button>
+    <div class="links">
+{{NAV}}
+    </div>
+  </nav>
+  <main id="main">
+{{BODY}}
+  </main>
+</div>
+<script>
+(function () {
+  var ids = {{IDS}};
+  var links = document.querySelectorAll("nav a");
+  function show() {
+    var id = (location.hash || "#home").slice(1);
+    if (ids.indexOf(id) < 0) id = "home";
+    document.querySelectorAll("section[data-page]").forEach(function (s) { s.hidden = s.dataset.page !== id; });
+    links.forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + id); });
+    document.getElementById("nav").classList.remove("open");
+    document.getElementById("menuBtn").setAttribute("aria-expanded", "false");
+    window.scrollTo(0, 0);
+  }
+  document.getElementById("menuBtn").addEventListener("click", function () {
+    var n = document.getElementById("nav"); n.classList.toggle("open");
+    this.setAttribute("aria-expanded", n.classList.contains("open") ? "true" : "false");
+  });
+  window.addEventListener("hashchange", show);
+  show();
+})();
+</script>

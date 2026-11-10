@@ -1,0 +1,271 @@
+{
+ "_說明": "Workflow v2 的 N4 產物：每頁投影片可以使用的事實（wiki 頁#重點第幾條）與這頁負責『教』的術語。N5 只能用這裡列出的事實。 avoid：事實原句裡有、但對新手太深，這頁刻意不用的術語（N6 會檢查真的沒出現）。",
+ "slides": [
+  {
+   "n": 1,
+   "title": "Edge AI 入門",
+   "facts": [],
+   "introduces": [],
+   "avoid": []
+  },
+  {
+   "n": 2,
+   "title": "今天學完你會知道",
+   "facts": [],
+   "introduces": [
+    "雲端 AI"
+   ],
+   "avoid": []
+  },
+  {
+   "n": 3,
+   "title": "手錶怎麼知道你跌倒了？",
+   "facts": [
+    "use-cases#1",
+    "cloud-vs-edge#4",
+    "edge-ai#5",
+    "cloud-vs-edge#3"
+   ],
+   "introduces": [
+    "延遲"
+   ],
+   "avoid": []
+  },
+  {
+   "n": 4,
+   "title": "邊緣 AI 是什麼",
+   "facts": [
+    "edge-ai#1",
+    "edge-ai#2",
+    "edge-ai#3",
+    "edge-ai#4",
+    "sources#2",
+    "edge-hardware#5"
+   ],
+   "introduces": [
+    "邊緣運算",
+    "IoT",
+    "訓練",
+    "推論"
+   ],
+   "avoid": []
+  },
+  {
+   "n": 5,
+   "title": "雲端 vs 邊緣",
+   "facts": [
+    "cloud-vs-edge#1",
+    "cloud-vs-edge#2",
+    "cloud-vs-edge#4",
+    "cloud-vs-edge#5",
+    "cloud-vs-edge#6",
+    "edge-hardware#2"
+   ],
+   "introduces": [],
+   "avoid": []
+  },
+  {
+   "n": 6,
+   "title": "先分清楚：訓練 vs 推論",
+   "facts": [
+    "training-vs-inference#1",
+    "training-vs-inference#2",
+    "training-vs-inference#3",
+    "training-vs-inference#4"
+   ],
+   "introduces": [
+    "損失函數",
+    "反向傳播",
+    "權重",
+    "前向傳遞"
+   ],
+   "avoid": []
+  },
+  {
+   "n": 7,
+   "title": "一套邊緣 AI 系統有哪些元件",
+   "facts": [
+    "edge-hardware#1",
+    "edge-hardware#2",
+    "edge-hardware#3",
+    "edge-hardware#4",
+    "edge-hardware#5"
+   ],
+   "introduces": [
+    "NPU",
+    "GPU"
+   ],
+   "avoid": []
+  },
+  {
+   "n": 8,
+   "title": "不是二選一：六個等級",
+   "facts": [
+    "edge-intelligence-levels#1",
+    "edge-intelligence-levels#2",
+    "edge-intelligence-levels#3",
+    "edge-intelligence-levels#4",
+    "edge-intelligence-levels#5",
+    "edge-intelligence-levels#6",
+    "edge-intelligence-levels#7",
+    "edge-intelligence-levels#8",
+    "edge-intelligence-levels#9",
+    "training-vs-inference#5"
+   ],
+   "introduces": [
+    "聯邦學習"
+   ],
+   "avoid": [
+    "卸載"
+   ]
+  },
+  {
+   "n": 9,
+   "title": "最大的難題：裝置太小",
+   "facts": [
+    "edge-hardware#6",
+    "tinyml-mcunet#2",
+    "tinyml-mcunet#3"
+   ],
+   "introduces": [
+    "微控制器",
+    "SRAM",
+    "激活值",
+    "Flash"
+   ],
+   "avoid": []
+  },
+  {
+   "n": 10,
+   "title": "解法 1：把模型壓小",
+   "facts": [
+    "model-compression#3",
+    "model-compression#4",
+    "model-compression#5",
+    "pruning#3",
+    "quantization#3",
+    "edge-hardware#8",
+    "sources#3"
+   ],
+   "introduces": [
+    "剪枝",
+    "量化",
+    "霍夫曼編碼",
+    "ImageNet",
+    "DRAM"
+   ],
+   "avoid": [
+    "權重共享",
+    "k-means"
+   ]
+  },
+  {
+   "n": 11,
+   "title": "量化在實務上怎麼做",
+   "facts": [
+    "quantization#1",
+    "quantization#4",
+    "quantization#table",
+    "quantization#5",
+    "quantization#7"
+   ],
+   "introduces": [
+    "浮點數",
+    "Edge TPU",
+    "代表性資料集",
+    "量化感知訓練"
+   ],
+   "avoid": []
+  },
+  {
+   "n": 12,
+   "title": "解法 2：模型和引擎一起設計",
+   "facts": [
+    "tinyml-mcunet#4",
+    "tinyml-mcunet#5",
+    "tinyml-mcunet#6",
+    "tinyml-mcunet#7"
+   ],
+   "introduces": [
+    "TinyNAS",
+    "TinyEngine",
+    "top-1 準確率",
+    "TinyML"
+   ],
+   "avoid": []
+  },
+  {
+   "n": 13,
+   "title": "連訓練都在手機上：聯邦學習",
+   "facts": [
+    "federated-learning#2",
+    "federated-learning#4",
+    "federated-learning#5",
+    "federated-learning#6",
+    "federated-learning#7",
+    "federated-learning#8"
+   ],
+   "introduces": [],
+   "avoid": []
+  },
+  {
+   "n": 14,
+   "title": "評估一個邊緣 AI 系統的六個指標",
+   "facts": [
+    "inference-kpis#1",
+    "inference-kpis#2",
+    "inference-kpis#3",
+    "inference-kpis#4",
+    "inference-kpis#5",
+    "inference-kpis#6",
+    "inference-kpis#7"
+   ],
+   "introduces": [],
+   "avoid": []
+  },
+  {
+   "n": 15,
+   "title": "五個常見誤解",
+   "facts": [
+    "misconceptions#1",
+    "misconceptions#2",
+    "misconceptions#3",
+    "misconceptions#4",
+    "misconceptions#6"
+   ],
+   "introduces": [],
+   "avoid": []
+  },
+  {
+   "n": 16,
+   "title": "小測驗",
+   "facts": [
+    "training-vs-inference#3",
+    "edge-intelligence-levels#8",
+    "quantization#table",
+    "quantization#6",
+    "edge-intelligence-levels#2",
+    "edge-intelligence-levels#7"
+   ],
+   "introduces": [],
+   "avoid": [
+    "卸載"
+   ]
+  },
+  {
+   "n": 17,
+   "title": "回顧與參考來源",
+   "facts": [
+    "edge-ai#3",
+    "cloud-vs-edge#6",
+    "edge-intelligence-levels#9",
+    "model-compression#4",
+    "tinyml-mcunet#4",
+    "edge-ai#5",
+    "cloud-vs-edge#4"
+   ],
+   "introduces": [],
+   "avoid": []
+  }
+ ]
+}
