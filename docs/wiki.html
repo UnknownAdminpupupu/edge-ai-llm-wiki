@@ -931,7 +931,7 @@ pre { background: var(--panel); padding: 12px; border-radius: 6px; overflow-x: a
 <li><strong>不複製原文</strong>：一律用自己的話改寫。</li>
 </ol></section>
 <section id="p-talk-f" data-page="talk-f" hidden><p class="crumb">過程紀錄</p><h1>Loop／Graph 設計：Workflow v1 → v2</h1><h2>Workflow v1（第一次實際執行 Run 1 用的流程）</h2>
-<pre class="mermaid">flowchart LR
+<pre class="mermaid">flowchart TD
   N0[N0 範圍討論] --&gt; N1[N1 蒐集來源&lt;br/&gt;品質關卡]
   N1 --&gt; N2[N2 Ingest&lt;br/&gt;先討論再寫入]
   N2 --&gt;|下一篇| N2
@@ -976,7 +976,7 @@ pre { background: var(--panel); padding: 12px; border-radius: 6px; overflow-x: a
 </table>
 <p>問題都在「生成之後」才被抓到。大綱只寫「這頁看哪個 wiki 頁」，沒規定「能用哪幾句」「哪頁負責教哪個術語」，所以生成時會用到大綱外的內容、自己換算數字、術語還沒教就先用。</p>
 <h2>Workflow v2（Run 2 用的流程）</h2>
-<pre class="mermaid">flowchart LR
+<pre class="mermaid">flowchart TD
   N0[N0 範圍討論] --&gt; N1[N1 蒐集來源]
   N1 --&gt; N2[N2 Ingest]
   N2 --&gt; L{每篇後&lt;br/&gt;術語＋來源 lint}

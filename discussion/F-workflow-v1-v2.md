@@ -3,7 +3,7 @@
 ## Workflow v1（第一次實際執行 Run 1 用的流程）
 
 ```mermaid
-flowchart LR
+flowchart TD
   N0[N0 範圍討論] --> N1[N1 蒐集來源<br/>品質關卡]
   N1 --> N2[N2 Ingest<br/>先討論再寫入]
   N2 -->|下一篇| N2
@@ -34,7 +34,7 @@ flowchart LR
 ## Workflow v2（Run 2 用的流程）
 
 ```mermaid
-flowchart LR
+flowchart TD
   N0[N0 範圍討論] --> N1[N1 蒐集來源]
   N1 --> N2[N2 Ingest]
   N2 --> L{每篇後<br/>術語＋來源 lint}
